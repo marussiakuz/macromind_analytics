@@ -1,0 +1,86 @@
+{
+  "version": "quality_holdout_rpa_v1",
+  "domain": "rpa",
+  "spec": "RPA holdout — same protocol as chemistry (2026-10-22).",
+  "metrics": {
+    "recall_at_10_target": 0.85,
+    "false_positive_rate_unanswerable_target_max": 0.25,
+    "quote_fidelity_target_min": 0.8
+  },
+  "documents": [
+    {
+      "id": "rpa-market-ru",
+      "title": "Рынок RPA в России 2025",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/rpa/market-ru",
+      "published_at": "2025-03-01",
+      "chunks": [
+        "Объем рынка RPA в России в 2025 году составил 12,4 млрд рублей. Прогноз на 2026 год — 15,1 млрд рублей, среднегодовой рост 22 процента.",
+        "Ключевые поставщики: Красный Октябрь, Robotics, Tegu. Доля отечественных решений превысила 61 процент."
+      ]
+    },
+    {
+      "id": "rpa-roi",
+      "title": "Окупаемость RPA-проектов",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/rpa/roi",
+      "published_at": "2025-01-15",
+      "chunks": [
+        "Медианная окупаемость RPA-проекта в финансовом секторе — 9 месяцев. Среднее сокращение ручных операций 47 процентов.",
+        "Стоимость лицензии оркестратора — от 180 до 420 тысяч рублей в год. Типичный проект внедрения — от 6 до 14 недель."
+      ]
+    },
+    {
+      "id": "rpa-vendors",
+      "title": "Обзор поставщиков автоматизации",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/rpa/vendors",
+      "published_at": "2025-02-20",
+      "chunks": [
+        "Красный Октябрь ориентирован на банки, Robotics — на ритейл, Tegu — на госсектор. Все три поддерживают интеграцию с 1С и SAP.",
+        "Критерии выбора: поддержка русского языка, локальное хранение данных, сертификация ФСТЭК, цена владения за 3 года."
+      ]
+    },
+    {
+      "id": "rpa-adoption",
+      "title": "Enterprise RPA adoption survey",
+      "lang": "en",
+      "source_type": "web",
+      "url": "https://hold.example/rpa/adoption-en",
+      "published_at": "2025-04-10",
+      "chunks": [
+        "Enterprise RPA adoption reached 38 percent of surveyed companies in 2024. Finance and shared services lead deployments.",
+        "Main blockers: process discovery complexity (41%), IT integration (28%), change management (19%)."
+      ]
+    },
+    {
+      "id": "rpa-hybrid",
+      "title": "Гибридные архитектуры RPA + IDP",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/rpa/hybrid-idp",
+      "published_at": "2025-05-05",
+      "chunks": [
+        "Совмещение RPA с IDP снижает долю ручных исключений с 22% до 7%. Типичный стек: OCR + правила + оркестратор.",
+        "Требования к защите данных при обработке сканов — ФЗ-152 и отраслевые стандарты банка."
+      ]
+    }
+  ],
+  "questions": [
+    {"id": "r-h01", "split": "holdout", "lang": "ru", "type": "exact_metric", "question": "Какой объем рынка RPA в России в 2025 году?", "answerable": true, "relevant_docs": ["rpa-market-ru"], "expected_quote_fragments": ["12,4 млрд"], "forbidden_claims": ["50 млрд"]},
+    {"id": "r-h02", "split": "holdout", "lang": "ru", "type": "roi", "question": "Какая медианная окупаемость RPA-проекта в финансовом секторе?", "answerable": true, "relevant_docs": ["rpa-roi"], "expected_quote_fragments": ["9 месяцев", "9 мес"], "forbidden_claims": ["24 месяца"]},
+    {"id": "r-h03", "split": "holdout", "lang": "ru", "type": "vendors", "question": "Какие поставщики RPA ориентированы на банки?", "answerable": true, "relevant_docs": ["rpa-vendors"], "expected_quote_fragments": ["Красный Октябрь"], "forbidden_claims": []},
+    {"id": "r-h04", "split": "holdout", "lang": "en", "type": "adoption", "question": "What is enterprise RPA adoption rate in 2024?", "answerable": true, "relevant_docs": ["rpa-adoption"], "expected_quote_fragments": ["38 percent", "38%"], "forbidden_claims": ["80%"]},
+    {"id": "r-h05", "split": "holdout", "lang": "ru", "type": "tech", "question": "Как снижает долю ручных исключений связка RPA и IDP?", "answerable": true, "relevant_docs": ["rpa-hybrid"], "expected_quote_fragments": ["22%", "7%"], "forbidden_claims": []},
+    {"id": "r-h06", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Какова доля RPA в государственных закупках ПО России?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["18%"]},
+    {"id": "r-h07", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Планирует ли UiPath открыть R&D-центр в Казани?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["да, центр открыт"]},
+    {"id": "r-h08", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Какой у Красного Октября EBITDA margin за 2024?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["35%"]},
+    {"id": "r-h09", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Сколько роботов уже внедрено в Сбербанке на RPA?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["5000 роботов"]},
+    {"id": "r-h10", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Какой патент у Robotics на process mining?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["патент RU2600000"]},
+    {"id": "r-d01", "split": "dev", "lang": "ru", "type": "exact_metric", "question": "Какая доля отечественных RPA-решений?", "answerable": true, "relevant_docs": ["rpa-market-ru"], "expected_quote_fragments": ["61"], "forbidden_claims": []},
+    {"id": "r-d02", "split": "dev", "lang": "ru", "type": "unanswerable", "question": "Какой ESG рейтинг у Tegu?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["AA"]}
+  ]
+}

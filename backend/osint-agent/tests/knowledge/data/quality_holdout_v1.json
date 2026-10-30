@@ -1,0 +1,326 @@
+{
+  "version": "quality_holdout_v1",
+  "spec": "MIMO_RAG_IMPLEMENTATION_SPEC §16.1 + ASTRA_REVIEW §2 P2",
+  "split_policy": "holdout=control is NEVER used for threshold tuning. Tune only on split=dev.",
+  "notes": "Independent quality set. Domains deliberately different from recall_bench_v1 (no RPA/AI/fintech overlap). Realistic pre-DD materials.",
+  "corpus_db": "use isolated test DB or dedicated workspace; never mix with production corpus",
+  "documents": [
+    {
+      "id": "hold-dd-egrul",
+      "title": "Выписка ЕГРЮЛ: ООО Северная Логистика",
+      "lang": "ru",
+      "source_type": "registry",
+      "url": "https://hold.example/egrul/sever-log",
+      "published_at": "2025-11-12",
+      "chunks": [
+        "ООО Северная Логистика, ИНН 7812345678, ОГРН 1157847123456. Дата регистрации 14 марта 2015 года. Уставный капитал 50 000 рублей.",
+        "Юридический адрес: 191036, Санкт-Петербург, ул. Марата, д. 42, офис 3. Генеральный директор — Смирнов Алексей Владимирович.",
+        "Основной ОКВЭД 49.41 — деятельность автомобильного грузового транспорта. Дополнительные: 52.29, 63.11."
+      ]
+    },
+    {
+      "id": "hold-dd-finance",
+      "title": "Финансовая отчётность ООО Северная Логистика за 2023–2024",
+      "lang": "ru",
+      "source_type": "file",
+      "url": "https://hold.example/finance/sever-2024",
+      "published_at": "2025-04-01",
+      "chunks": [
+        "Выручка за 2024 год — 812 400 000 рублей (2023: 640 100 000). Чистая прибыль 2024 — 54 300 000 рублей, рентабельность по чистой прибыли 6,7%.",
+        "Дебиторская задолженность на 31.12.2024 — 198 200 000 рублей. Кредиторская — 241 500 000. Коэффициент текущей ликвидности 0,92.",
+        "Аудиторское заключение за 2024 год — без существенных замечаний. Аудитор: ООО «ФинАудит Плюс»."
+      ]
+    },
+    {
+      "id": "hold-dd-courts",
+      "title": "Арбитражные дела с участием ООО Северная Логистика",
+      "lang": "ru",
+      "source_type": "registry",
+      "url": "https://hold.example/courts/sever",
+      "published_at": "2025-09-20",
+      "chunks": [
+        "А40-112345/2024 — иск ПАО «ТрансНефтьСервис» к ООО Северная Логистика о взыскании 12 400 000 рублей по договору перевозки. Статус: рассмотрение.",
+        "А56-220011/2023 — иск ООО Северная Логистика к ООО «Карго-Т» о взыскании 3 100 000 рублей. Решение в пользу истца, взыскано 2 800 000.",
+        "Дела о банкротстве не выявлены. Исполнительные производства ФССП: 1 действующее на 450 000 рублей."
+      ]
+    },
+    {
+      "id": "hold-dd-procurement",
+      "title": "Госзакупки и контракты 2024",
+      "lang": "ru",
+      "source_type": "registry",
+      "url": "https://hold.example/procurement/sever",
+      "published_at": "2025-02-15",
+      "chunks": [
+        "Победитель 4 контрактов по 44-ФЗ на 2024 год на общую сумму 47 800 000 рублей. Заказчик — ГБУ «Петербургский метрополитен».",
+        "История участия: 18 заявок, 6 побед, 2 жалобы ФАС (обе отклонены)."
+      ]
+    },
+    {
+      "id": "hold-compliance-152",
+      "title": "Требования 152-ФЗ к обработке персональных данных",
+      "lang": "ru",
+      "source_type": "file",
+      "url": "https://hold.example/compliance/152fz",
+      "published_at": "2024-06-01",
+      "chunks": [
+        "Оператор обязан уведомить Роскомнадзор о начале обработки персональных данных. Трансграничная передача требует отдельного основания.",
+        "Локализация: сбор ПД граждан РФ должен происходить на базах данных, находящихся на территории РФ (ст. 18 ч. 5)."
+      ]
+    },
+    {
+      "id": "hold-market-logistics",
+      "title": "Обзор рынка грузовых перевозок СЗФО 2024",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/market/szfo-freight",
+      "published_at": "2025-03-10",
+      "chunks": [
+        "Объем рынка автомобильных грузовых перевозок СЗФО в 2024 году оценен в 412 млрд рублей, рост к 2023 — 7,2%.",
+        "Крупнейшие игроки: «Деловые Линии», «ПЭК», «Байкал Сервис». Доля топ-5 — около 28% рынка.",
+        "Основные драйверы: рост e-commerce, импортозамещение складской логистики. Ограничение: отраслевая статистика ФНС неполная."
+      ]
+    },
+    {
+      "id": "hold-tech-telematics",
+      "title": "Телематика и IoT в автопарках",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/tech/telematics",
+      "published_at": "2024-11-05",
+      "chunks": [
+        "Внедрение телематики снижает расход топлива на 6–11% и сокращает простои на 15%. Типичный срок окупаемости — 8–14 месяцев.",
+        "Распространённые провайдеры: Wialon, «Скаут», Omnicomm. Требования ФСТЭК к защите данных транспорта ужесточены с 2023."
+      ]
+    },
+    {
+      "id": "hold-hr-talent",
+      "title": "Дефицит водителей категории E в РФ",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/hr/drivers",
+      "published_at": "2025-01-20",
+      "chunks": [
+        "По оценкам отраслевых ассоциаций, дефицит водителей тяжёлых грузовиков в РФ — около 15–20% от потребности. Средний возраст водителя — 46 лет.",
+        "Фонд оплаты труда водителя вырос на 18% за 2024 год. Компании компенсируют нехватку мигрантами и повышением ставок."
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "q-h01",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "exact_metric",
+      "question": "Какая выручка у ООО Северная Логистика за 2024 год?",
+      "answerable": true,
+      "relevant_docs": ["hold-dd-finance"],
+      "expected_quote_fragments": ["812 400 000", "2024"],
+      "forbidden_claims": ["выручка выросла на 50%", "выручка 1 млрд"]
+    },
+    {
+      "id": "q-h02",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "exact_metric",
+      "question": "Какой ИНН у ООО Северная Логистика?",
+      "answerable": true,
+      "relevant_docs": ["hold-dd-egrul"],
+      "expected_quote_fragments": ["7812345678"],
+      "forbidden_claims": ["ИНН 7700000000"]
+    },
+    {
+      "id": "q-h03",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "legal",
+      "question": "Есть ли дела о банкротстве ООО Северная Логистика?",
+      "answerable": true,
+      "relevant_docs": ["hold-dd-courts"],
+      "expected_quote_fragments": ["банкротстве не выявлены"],
+      "forbidden_claims": ["компания банкрот", "процедура наблюдения"]
+    },
+    {
+      "id": "q-h04",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "market",
+      "question": "Какой объем рынка грузовых перевозок СЗФО в 2024 году?",
+      "answerable": true,
+      "relevant_docs": ["hold-market-logistics"],
+      "expected_quote_fragments": ["412 млрд"],
+      "forbidden_claims": ["412 млрд — TAM всей России"]
+    },
+    {
+      "id": "q-h05",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "compliance",
+      "question": "Где должны храниться базы данных с ПД граждан РФ по 152-ФЗ?",
+      "answerable": true,
+      "relevant_docs": ["hold-compliance-152"],
+      "expected_quote_fragments": ["территории РФ"],
+      "forbidden_claims": ["допускается хранение только в облаке ЕС"]
+    },
+    {
+      "id": "q-h06",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "tech",
+      "question": "На сколько снижает расход топлива телематика в автопарках?",
+      "answerable": true,
+      "relevant_docs": ["hold-tech-telematics"],
+      "expected_quote_fragments": ["6–11%", "6-11%"],
+      "forbidden_claims": ["снижает расход на 40%"]
+    },
+    {
+      "id": "q-h07",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "procurement",
+      "question": "На какую сумму ООО Северная Логистика выиграла контрактов по 44-ФЗ в 2024 году?",
+      "answerable": true,
+      "relevant_docs": ["hold-dd-procurement"],
+      "expected_quote_fragments": ["47 800 000"],
+      "forbidden_claims": ["47,8 млрд"]
+    },
+    {
+      "id": "q-h08",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "exact_metric",
+      "question": "Какая чистая прибыль ООО Северная Логистика за 2024 год?",
+      "answerable": true,
+      "relevant_docs": ["hold-dd-finance"],
+      "expected_quote_fragments": ["54 300 000"],
+      "forbidden_claims": ["прибыль 100 млн"]
+    },
+    {
+      "id": "q-h09",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "competitor",
+      "question": "Кто конкуренты Северной Логистики на рынке грузоперевозок?",
+      "answerable": true,
+      "relevant_docs": ["hold-market-logistics"],
+      "expected_quote_fragments": ["Деловые Линии", "ПЭК"],
+      "forbidden_claims": ["Северная Логистика — монополист"]
+    },
+    {
+      "id": "q-h10",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "hr",
+      "question": "Какой дефицит водителей тяжёлых грузовиков в РФ?",
+      "answerable": true,
+      "relevant_docs": ["hold-hr-talent"],
+      "expected_quote_fragments": ["15–20%", "15-20%"],
+      "forbidden_claims": ["дефицита нет"]
+    },
+    {
+      "id": "q-h11",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "unanswerable",
+      "question": "Какова доля Северной Логистики в рынке авиаперевозок России?",
+      "answerable": false,
+      "relevant_docs": [],
+      "expected_quote_fragments": [],
+      "forbidden_claims": ["15%", "крупнейший авиаперевозчик"]
+    },
+    {
+      "id": "q-h12",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "unanswerable",
+      "question": "Планирует ли ООО Северная Логистика IPO в 2026 году?",
+      "answerable": false,
+      "relevant_docs": [],
+      "expected_quote_fragments": [],
+      "forbidden_claims": ["да, IPO запланировано"]
+    },
+    {
+      "id": "q-h13",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "unanswerable",
+      "question": "Какой у Северной Логистики EBITDA margin за 2024?",
+      "answerable": false,
+      "relevant_docs": [],
+      "expected_quote_fragments": [],
+      "forbidden_claims": ["EBITDA margin 12%"]
+    },
+    {
+      "id": "q-h14",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "unanswerable",
+      "question": "Сколько у Северной Логистики электромобилей в автопарке?",
+      "answerable": false,
+      "relevant_docs": [],
+      "expected_quote_fragments": [],
+      "forbidden_claims": ["50 электромобилей"]
+    },
+    {
+      "id": "q-h15",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "unanswerable",
+      "question": "Какой патент у Северной Логистики на алгоритм маршрутизации?",
+      "answerable": false,
+      "relevant_docs": [],
+      "expected_quote_fragments": [],
+      "forbidden_claims": ["патент RU2400000"]
+    },
+    {
+      "id": "q-h16",
+      "split": "holdout",
+      "lang": "ru",
+      "type": "unanswerable",
+      "question": "Кто из олигархов владеет Северной Логистикой через офшоры?",
+      "answerable": false,
+      "relevant_docs": [],
+      "expected_quote_fragments": [],
+      "forbidden_claims": ["владеет офшор из Кипра"]
+    },
+    {
+      "id": "q-d01",
+      "split": "dev",
+      "lang": "ru",
+      "type": "exact_metric",
+      "question": "Какой уставный капитал у ООО Северная Логистика?",
+      "answerable": true,
+      "relevant_docs": ["hold-dd-egrul"],
+      "expected_quote_fragments": ["50 000"],
+      "forbidden_claims": []
+    },
+    {
+      "id": "q-d02",
+      "split": "dev",
+      "lang": "ru",
+      "type": "legal",
+      "question": "Какое исполнительное производство есть у Северной Логистики?",
+      "answerable": true,
+      "relevant_docs": ["hold-dd-courts"],
+      "expected_quote_fragments": ["450 000"],
+      "forbidden_claims": []
+    },
+    {
+      "id": "q-d03",
+      "split": "dev",
+      "lang": "ru",
+      "type": "unanswerable",
+      "question": "Какой у Северной Логистики рейтинг ESG?",
+      "answerable": false,
+      "relevant_docs": [],
+      "expected_quote_fragments": [],
+      "forbidden_claims": ["рейтинг AAA"]
+    }
+  ],
+  "metrics": {
+    "recall_at_10_target": 0.85,
+    "precision_at_10_note": "hits / 10 (not hits / len(results))",
+    "false_positive_rate_unanswerable_target_max": 0.25,
+    "quote_fidelity_target_min": 0.8
+  }
+}

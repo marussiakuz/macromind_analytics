@@ -1,0 +1,293 @@
+{
+  "version": "recall_bench_v1",
+  "spec": "MIMO_RAG_IMPLEMENTATION_SPEC §16.1",
+  "notes": "Controlled corpus + labeled questions for Recall@10. Do not tune parameters on split=control.",
+  "documents": [
+    {
+      "id": "doc-rpa-market",
+      "title": "Рынок RPA в России 2025",
+      "lang": "ru",
+      "url": "https://bench.example/rpa-market",
+      "chunks": [
+        "Объем рынка RPA (роботизация процессов) в России в 2025 году составил 12,4 млрд рублей. Прогноз на 2026 год — 15,1 млрд рублей, среднегодовой рост 22 процента.",
+        "Ключевые поставщики RPA на российском рынке: Красный Октябрь, Robotics, Tegu, UiPath (ограниченный присутствия). Доля отечественных решений превысила 61 процент."
+      ]
+    },
+    {
+      "id": "doc-rpa-roi",
+      "title": "Окупаемость RPA-проектов",
+      "lang": "ru",
+      "url": "https://bench.example/rpa-roi",
+      "chunks": [
+        "Медианная окупаемость RPA-проекта в финансовом секторе — 9 месяцев. Среднее сокращение ручных операций 47 процентов, ошибка обработки снижается с 2,1 до 0,4 процента.",
+        "Стоимость одной лицензии оркестратора RPA варьируется от 180 до 420 тысяч рублей в год. Типичный проект внедрения — от 6 до 14 недель."
+      ]
+    },
+    {
+      "id": "doc-rpa-vendors",
+      "title": "Обзор поставщиков автоматизации",
+      "lang": "ru",
+      "url": "https://bench.example/rpa-vendors",
+      "chunks": [
+        "Сравнение платформ автоматизации: Красный Октябрь ориентирован на банки, Robotics — на ритейл, Tegu — на госсектор. Все три поддерживают интеграцию с 1С и SAP.",
+        "Критерии выбора поставщика RPA: поддержка русского языка, локальное хранение данных, сертификация ФСТЭК, цена владения за 3 года."
+      ]
+    },
+    {
+      "id": "doc-ai-transformers",
+      "title": "Transformer architectures for retrieval",
+      "lang": "en",
+      "url": "https://bench.example/ai-transformers",
+      "chunks": [
+        "Dense retrieval with transformer encoders outperforms BM25 on open-domain QA when fine-tuned. Dual-encoder models such as DPR and Contriever embed questions and passages into a shared vector space.",
+        "Hybrid search combines lexical matching (BM25, PostgreSQL FTS) with dense vectors. Reciprocal Rank Fusion (RRF) merges candidate lists without score calibration."
+      ]
+    },
+    {
+      "id": "doc-ai-embeddings",
+      "title": "Text embedding models comparison",
+      "lang": "en",
+      "url": "https://bench.example/ai-embeddings",
+      "chunks": [
+        "Qwen3-Embedding-0.6B produces 1024-dimensional vectors and supports Russian and English. Cosine similarity between unrelated texts is typically below 0.2, while paraphrases score above 0.5.",
+        "Embedding quality is measured with retrieval benchmarks: Recall@10, nDCG@10, MRR. Batch encoding of 1000 passages of 512 tokens is a standard throughput test."
+      ]
+    },
+    {
+      "id": "doc-ai-agents",
+      "title": "LLM agents and tool use",
+      "lang": "en",
+      "url": "https://bench.example/ai-agents",
+      "chunks": [
+        "LLM agents call tools through structured APIs. Retrieval-augmented generation (RAG) grounds answers in a document corpus and must cite evidence identifiers.",
+        "Hallucination risk rises when the model answers without retrieved support. A correct system returns no_evidence_in_allowed_corpus instead of inventing facts."
+      ]
+    },
+    {
+      "id": "doc-fintech-payments",
+      "title": "Платежные системы России 2025",
+      "lang": "ru",
+      "url": "https://bench.example/fintech-payments",
+      "chunks": [
+        "Количество безналичных платежей в России в 2025 году выросло на 18 процентов и превысило 41 млрд операций. Доля СБП в розничных переводах достигла 23 процентов.",
+        "Средний чек эквайринга в сегменте e-commerce — 2 740 рублей. Комиссия эквайринга для малого бизнеса снизилась до 1,4–1,9 процента."
+      ]
+    },
+    {
+      "id": "doc-fintech-risk",
+      "title": "Антифрод и скоринг",
+      "lang": "ru",
+      "url": "https://bench.example/fintech-risk",
+      "chunks": [
+        "Модели антифрода на градиентном бустинге снижают долю мошеннических транзакций до 0,03 процента при уровне ложных срабатываний 1,2 процента.",
+        "Скоринг физических лиц использует кредитную историю, поведенческие признаки и альтернативные данные. Точность Gini-индекса лучших моделей — 0,68."
+      ]
+    },
+    {
+      "id": "doc-cyber-zero-trust",
+      "title": "Zero Trust architecture patterns",
+      "lang": "en",
+      "url": "https://bench.example/cyber-zero-trust",
+      "chunks": [
+        "Zero Trust assumes no implicit trust inside the network. Every access request is authenticated, authorized, and encrypted with continuous verification.",
+        "Microsegmentation and identity-aware proxies are core Zero Trust controls. NIST SP 800-207 defines the reference architecture."
+      ]
+    },
+    {
+      "id": "doc-cyber-soc",
+      "title": "Security operations center metrics",
+      "lang": "en",
+      "url": "https://bench.example/cyber-soc",
+      "chunks": [
+        "SOC metrics include MTTD (mean time to detect) and MTTR (mean time to respond). Leading SOCs achieve MTTD under 1 hour and MTTR under 4 hours.",
+        "SIEM platforms correlate logs from endpoints, network, and cloud. False positive rate above 60 percent causes analyst burnout."
+      ]
+    },
+    {
+      "id": "doc-robot-trials",
+      "title": "Испытания промышленных роботов",
+      "lang": "ru",
+      "url": "https://bench.example/robot-trials",
+      "chunks": [
+        "Заводские испытания роботизированного манипулятора показали точность позиционирования 0,08 мм и цикл 2,4 секунды. Ресурс — 60 000 часов до капремонта.",
+        "Программа испытаний включает 500 000 циклов, тест на пылевлагозащиту IP67 и проверку безопасности по ISO 10218."
+      ]
+    },
+    {
+      "id": "doc-robot-sensors",
+      "title": "Sensor fusion for mobile robots",
+      "lang": "en",
+      "url": "https://bench.example/robot-sensors",
+      "chunks": [
+        "Mobile robots fuse LiDAR, IMU, and wheel odometry for localization. Extended Kalman Filters and factor graphs are common estimators.",
+        "Indoor navigation accuracy of 5 cm is achievable with 3D LiDAR SLAM. Outdoor RTK-GPS adds centimeter-level absolute position."
+      ]
+    },
+    {
+      "id": "doc-quantum-error",
+      "title": "Quantum error correction codes",
+      "lang": "en",
+      "url": "https://bench.example/quantum-error",
+      "chunks": [
+        "Surface codes correct local errors on a 2D lattice of qubits. Logical error rate falls exponentially with code distance under a threshold of about 1 percent.",
+        "Superconducting qubits require millikelvin refrigeration. Current devices implement 50–1000 physical qubits with limited coherence."
+      ]
+    },
+    {
+      "id": "doc-materials-supercond",
+      "title": "High-temperature superconductors",
+      "lang": "en",
+      "url": "https://bench.example/materials-supercond",
+      "chunks": [
+        "Cuprate superconductors show critical temperatures above 90 K. Iron-based pnictides reach 55 K. Mechanism involves Cooper pairing beyond BCS theory.",
+        "Applications include lossless power cables, SQUID magnetometers, and MRI magnets. Commercial tapes use YBCO coated conductors."
+      ]
+    },
+    {
+      "id": "doc-bio-protein",
+      "title": "Protein structure prediction advances",
+      "lang": "en",
+      "url": "https://bench.example/bio-protein",
+      "chunks": [
+        "AlphaFold2 predicts protein structures with atomic accuracy for many CASP targets. Language models of sequences capture evolutionary constraints.",
+        "Cryo-EM resolves dynamic complexes at 2–3 Å resolution. Integrative modeling combines cryo-EM, crosslinking, and predictions."
+      ]
+    },
+    {
+      "id": "doc-climate-carbon",
+      "title": "Carbon capture technologies",
+      "lang": "en",
+      "url": "https://bench.example/climate-carbon",
+      "chunks": [
+        "Direct air capture removes CO2 from ambient air using amine sorbents. Energy cost is 1.5–2.5 GJ per tonne of CO2 captured.",
+        "Enhanced weathering of basalt on agricultural land can sequester 0.5–2 tonnes CO2 per hectare per year while improving soil pH."
+      ]
+    },
+    {
+      "id": "doc-supply-semicon",
+      "title": "Semiconductor supply chain",
+      "lang": "en",
+      "url": "https://bench.example/supply-semicon",
+      "chunks": [
+        "TSMC and Samsung dominate leading-edge logic fabrication below 5 nm. EUV lithography tools are supplied almost exclusively by ASML.",
+        "The 2021–2023 chip shortage cost the automotive industry over 200 billion USD in lost revenue. Inventory buffers have since increased to 8–12 weeks."
+      ]
+    },
+    {
+      "id": "doc-space-launch",
+      "title": "Космические запуски 2025",
+      "lang": "ru",
+      "url": "https://bench.example/space-launch",
+      "chunks": [
+        "В 2025 году в мире выполнено 259 орбитальных запусков. Доля частных операторов превысила 72 процента. Средняя стоимость вывода 1 кг на низкую орбиту — 2 400 долларов.",
+        "Многоразовые ускорители снизили цену запуска на 35 процентов. Российская программа включает 6 запусков «Союз» и 2 «Ангара»."
+      ]
+    },
+    {
+      "id": "doc-energy-grid",
+      "title": "Smart grid modernization",
+      "lang": "en",
+      "url": "https://bench.example/energy-grid",
+      "chunks": [
+        "Smart grids integrate renewables with demand response and battery storage. Grid-forming inverters stabilize frequency when synchronous generators retire.",
+        "Levelized cost of utility-scale solar fell below 30 USD/MWh in sunny regions. Lithium-ion battery storage costs dropped 90 percent since 2010."
+      ]
+    },
+    {
+      "id": "doc-nlp-embeddings",
+      "title": "Мультиязычные эмбеддинги текста",
+      "lang": "ru",
+      "url": "https://bench.example/nlp-embeddings",
+      "chunks": [
+        "Мультиязычные модели эмбеддингов выравнивают русский и английский в общем векторном пространстве. Косинусное сходство пары «рынок / market» — около 0,5 при случайном уровне 0,1–0,2.",
+        "Оценка качества поиска: Recall@10, MRR, nDCG. Гибридный поиск (лексика + векторы) обычно превосходит каждый режим по отдельности."
+      ]
+    },
+    {
+      "id": "doc-cooking-borscht",
+      "title": "Рецепт борща",
+      "lang": "ru",
+      "url": "https://bench.example/cooking",
+      "chunks": [
+        "Классический борщ: говядина, свёкла, капуста, картофель, морковь, лук, томатная паста. Заправка из свёклы с уксусом сохраняет цвет.",
+        "Варить бульон 2 часа, овощи нарезать соломкой. Подавать со сметаной и укропом."
+      ]
+    },
+    {
+      "id": "doc-med-trials",
+      "title": "Клинические испытания лекарств",
+      "lang": "ru",
+      "url": "https://bench.example/med-trials",
+      "chunks": [
+        "Фаза III клинических испытаний включает от 300 до 3000 пациентов. Первичная конечная точка — снижение симптомов на 30 процентов против плацебо.",
+        "Рандомизация, слепой метод и мониторинг нежелательных явлений обязательны по GCP. Регистрация в Минздраве занимает до 60 дней."
+      ]
+    },
+    {
+      "id": "doc-sports-football",
+      "title": "Football analytics metrics",
+      "lang": "en",
+      "url": "https://bench.example/sports-football",
+      "chunks": [
+        "Expected goals (xG) models shot quality from location, body part, and assist type. Top leagues average 1.3 goals per match per team.",
+        "Physical tracking covers 10–13 km per player per match. High-intensity sprints correlate with winning transitions."
+      ]
+    },
+    {
+      "id": "doc-logistics-ports",
+      "title": "Морские порты и логистика",
+      "lang": "ru",
+      "url": "https://bench.example/logistics-ports",
+      "chunks": [
+        "Грузооборот крупнейших российских портов в 2025 году вырос на 4,2 процента. Контейнерные перевозки через Балтику сократились на 11 процентов.",
+        "Среднее время обработки контейнеровоза — 38 часов. Доля железнодорожного плеча в доставке — 63 процента."
+      ]
+    }
+  ],
+  "questions": [
+    {"id": "q01", "text": "Какой объем рынка RPA в России в 2025 году?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-rpa-market"], "split": "dev"},
+    {"id": "q02", "text": "Каков прогноз объема рынка RPA на 2026 год?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-rpa-market"], "split": "dev"},
+    {"id": "q03", "text": "Какая доля отечественных RPA-решений на российском рынке?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-rpa-market"], "split": "dev"},
+    {"id": "q04", "text": "Какова медианная окупаемость RPA-проекта в финансовом секторе?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-rpa-roi"], "split": "dev"},
+    {"id": "q05", "text": "На сколько процентов снижается ошибка обработки после внедрения RPA?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-rpa-roi"], "split": "control"},
+    {"id": "q06", "text": "Какова стоимость лицензии оркестратора RPA в год?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-rpa-roi"], "split": "control"},
+    {"id": "q07", "text": "Сколько безналичных платежей проведено в России в 2025 году?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-fintech-payments"], "split": "dev"},
+    {"id": "q08", "text": "Какая доля СБП в розничных переводах?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-fintech-payments"], "split": "dev"},
+    {"id": "q09", "text": "Каков средний чек эквайринга в e-commerce?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-fintech-payments"], "split": "control"},
+    {"id": "q10", "text": "До какого уровня снижается доля мошеннических транзакций в антифроде?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-fintech-risk"], "split": "dev"},
+    {"id": "q11", "text": "Сколько орбитальных запусков выполнено в мире в 2025 году?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-space-launch"], "split": "dev"},
+    {"id": "q12", "text": "Какова средняя стоимость вывода килограмма на низкую орбиту?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-space-launch"], "split": "control"},
+    {"id": "q13", "text": "Какой грузооборот российских портов в 2025 году?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-logistics-ports"], "split": "dev"},
+    {"id": "q14", "text": "Какова точность позиционирования промышленного манипулятора на испытаниях?", "category": "exact_metrics", "lang": "ru", "answerable": true, "relevant": ["doc-robot-trials"], "split": "control"},
+    {"id": "q15", "text": "Какие критерии важны при выборе поставщика RPA?", "category": "analog_search", "lang": "ru", "answerable": true, "relevant": ["doc-rpa-vendors", "doc-rpa-market"], "split": "dev"},
+    {"id": "q16", "text": "Какие российские платформы автоматизации сравнимы с UiPath?", "category": "analog_search", "lang": "ru", "answerable": true, "relevant": ["doc-rpa-vendors"], "split": "dev"},
+    {"id": "q17", "text": "Какие методы используются для оценки качества текстовых эмбеддингов?", "category": "analog_search", "lang": "ru", "answerable": true, "relevant": ["doc-nlp-embeddings", "doc-ai-embeddings"], "split": "dev"},
+    {"id": "q18", "text": "Какие технологии используются в системах антифрода и скоринга?", "category": "analog_search", "lang": "ru", "answerable": true, "relevant": ["doc-fintech-risk"], "split": "control"},
+    {"id": "q19", "text": "Что снижает стоимость орбитальных запусков?", "category": "analog_search", "lang": "ru", "answerable": true, "relevant": ["doc-space-launch"], "split": "dev"},
+    {"id": "q20", "text": "Какие подходы применяют для локализации мобильных роботов?", "category": "analog_search", "lang": "en", "answerable": true, "relevant": ["doc-robot-sensors"], "split": "dev"},
+    {"id": "q21", "text": "What alternatives exist for dense retrieval besides BM25?", "category": "analog_search", "lang": "en", "answerable": true, "relevant": ["doc-ai-transformers"], "split": "dev"},
+    {"id": "q22", "text": "Which controls are core to a Zero Trust architecture?", "category": "analog_search", "lang": "en", "answerable": true, "relevant": ["doc-cyber-zero-trust"], "split": "control"},
+    {"id": "q23", "text": "What are recent advances in protein structure prediction?", "category": "scientific", "lang": "en", "answerable": true, "relevant": ["doc-bio-protein"], "split": "dev"},
+    {"id": "q24", "text": "How do surface codes perform quantum error correction?", "category": "scientific", "lang": "en", "answerable": true, "relevant": ["doc-quantum-error"], "split": "dev"},
+    {"id": "q25", "text": "What is the critical temperature of cuprate superconductors?", "category": "scientific", "lang": "en", "answerable": true, "relevant": ["doc-materials-supercond"], "split": "control"},
+    {"id": "q26", "text": "What energy cost is associated with direct air capture of CO2?", "category": "scientific", "lang": "en", "answerable": true, "relevant": ["doc-climate-carbon"], "split": "dev"},
+    {"id": "q27", "text": "How do smart grids integrate renewable energy sources?", "category": "scientific", "lang": "en", "answerable": true, "relevant": ["doc-energy-grid"], "split": "control"},
+    {"id": "q28", "text": "What limits coherence in superconducting qubits?", "category": "scientific", "lang": "en", "answerable": true, "relevant": ["doc-quantum-error"], "split": "control"},
+    {"id": "q29", "text": "What techniques combine with cryo-EM for integrative modeling?", "category": "scientific", "lang": "en", "answerable": true, "relevant": ["doc-bio-protein"], "split": "dev"},
+    {"id": "q30", "text": "What is the levelized cost of utility-scale solar in sunny regions?", "category": "exact_metrics", "lang": "en", "answerable": true, "relevant": ["doc-energy-grid"], "split": "dev"},
+    {"id": "q31", "text": "Какой объем рынка роботизации ожидается в Японии в 2030 году?", "category": "unanswerable", "lang": "ru", "answerable": false, "relevant": [], "split": "dev"},
+    {"id": "q32", "text": "Какова выручка компании «Синяя птица» за 2024 год?", "category": "unanswerable", "lang": "ru", "answerable": false, "relevant": [], "split": "dev"},
+    {"id": "q33", "text": "Какой рейтинг надежности у банка «Волга-Кредит»?", "category": "unanswerable", "lang": "ru", "answerable": false, "relevant": [], "split": "control"},
+    {"id": "q34", "text": "What is the market share of Nvidia in AI accelerators in Brazil?", "category": "unanswerable", "lang": "en", "answerable": false, "relevant": [], "split": "dev"},
+    {"id": "q35", "text": "Which company won the 2026 World Cup of robotics?", "category": "unanswerable", "lang": "en", "answerable": false, "relevant": [], "split": "control"},
+    {"id": "q36", "text": "Какова температура сверхпроводимости в купратных материалах при давлении 10 ГПа?", "category": "unanswerable", "lang": "ru", "answerable": false, "relevant": [], "split": "dev"},
+    {"id": "q37", "text": "What was the exact MTTD of the Acme Corp SOC in March 2026?", "category": "unanswerable", "lang": "en", "answerable": false, "relevant": [], "split": "dev"},
+    {"id": "q38", "text": "Сколько стоит батарея ёмкостью 1 ТВт·ч для энергосети?", "category": "unanswerable", "lang": "ru", "answerable": false, "relevant": [], "split": "control"},
+    {"id": "q39", "text": "Как работает гибридный поиск по словам и смысловым векторам?", "category": "cross_lingual", "lang": "ru", "answerable": true, "relevant": ["doc-ai-transformers", "doc-nlp-embeddings"], "split": "dev"},
+    {"id": "q40", "text": "Какие размерности векторов у модели Qwen3-Embedding?", "category": "cross_lingual", "lang": "ru", "answerable": true, "relevant": ["doc-ai-embeddings"], "split": "dev"},
+    {"id": "q41", "text": "Почему система не должна выдумывать ответы без доказательств?", "category": "cross_lingual", "lang": "ru", "answerable": true, "relevant": ["doc-ai-agents"], "split": "dev"},
+    {"id": "q42", "text": "Что такое Zero Trust и как он проверяет доступ?", "category": "cross_lingual", "lang": "ru", "answerable": true, "relevant": ["doc-cyber-zero-trust"], "split": "control"},
+    {"id": "q43", "text": "Какие метрики используют в SOC для оценки реагирования?", "category": "cross_lingual", "lang": "ru", "answerable": true, "relevant": ["doc-cyber-soc"], "split": "dev"},
+    {"id": "q44", "text": "How does RPA ROI typically look in financial services?", "category": "cross_lingual", "lang": "en", "answerable": true, "relevant": ["doc-rpa-roi", "doc-rpa-market"], "split": "control"}
+  ]
+}

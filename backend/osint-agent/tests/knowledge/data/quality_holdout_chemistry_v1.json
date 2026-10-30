@@ -1,0 +1,86 @@
+{
+  "version": "quality_holdout_chemistry_v1",
+  "domain": "chemistry",
+  "spec": "First quality check on chemistry projects (2026-10-22). Same infra as other funds.",
+  "metrics": {
+    "recall_at_10_target": 0.85,
+    "false_positive_rate_unanswerable_target_max": 0.25,
+    "quote_fidelity_target_min": 0.8
+  },
+  "documents": [
+    {
+      "id": "chem-petrochem",
+      "title": "Нефтехимия России 2025: объем и мощности",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/chem/petrochem-2025",
+      "published_at": "2025-05-12",
+      "chunks": [
+        "Объем выпуска базовой нефтехимии в России в 2024 году — 18,4 млн тонн, рост 4,1% к 2023. Основные кластеры: Татнефтехим, Сибур, Нижнекамскнефтехим.",
+        "Загрузка мощностей полиэтилена — 91%. Прогноз ввода новых мощностей 2026–2028 — около 2,5 млн тонн."
+      ]
+    },
+    {
+      "id": "chem-agro",
+      "title": "Минеральные удобрения: экспорт и производство",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/chem/fertilizers",
+      "published_at": "2025-03-01",
+      "chunks": [
+        "Производство минеральных удобрений в 2024 году — 60,2 млн тонн (в пересчете на 100% действующего вещества). Экспорт — 38,7 млн тонн.",
+        "Крупнейшие производители: Уралхим, Фосагро, Европоташ. Индекс цен на аммиак вырос на 12% за 2024."
+      ]
+    },
+    {
+      "id": "chem-specialty",
+      "title": "Специальные химикаты для покрытий",
+      "lang": "en",
+      "source_type": "web",
+      "url": "https://hold.example/chem/specialty-coatings",
+      "published_at": "2025-01-20",
+      "chunks": [
+        "Specialty coatings additives market in CIS grew 3.8% in 2024. Demand drivers: automotive OEM and industrial maintenance.",
+        "Typical margin for specialty additives is 18–24%. Raw material volatility remains the main constraint."
+      ]
+    },
+    {
+      "id": "chem-hse",
+      "title": "Требования промышленной безопасности химпроизводств",
+      "lang": "ru",
+      "source_type": "file",
+      "url": "https://hold.example/chem/hse",
+      "published_at": "2024-09-01",
+      "chunks": [
+        "Объекты I и II классов опасности подлежат обязательному производственному контролю. Наружные установки — нормативы по отрыву.",
+        "Токсичные вещества: ПДК в воздухе рабочей зоны регламентируются ГОСТ 12.1.007."
+      ]
+    },
+    {
+      "id": "chem-catalysts",
+      "title": "Катализаторы нефтепереработки",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/chem/catalysts",
+      "published_at": "2025-02-10",
+      "chunks": [
+        "Российский рынок катализаторов НПЗ оценивается в 42 млрд рублей, локализация — около 55%. Срок службы катализатора — 3–5 лет.",
+        "Импортозамещение ускорилось после 2022 года; дефицит носителей Al2O3 сохраняется."
+      ]
+    }
+  ],
+  "questions": [
+    {"id": "c-h01", "split": "holdout", "lang": "ru", "type": "exact_metric", "question": "Какой объем выпуска базовой нефтехимии в России в 2024 году?", "answerable": true, "relevant_docs": ["chem-petrochem"], "expected_quote_fragments": ["18,4 млн"], "forbidden_claims": ["50 млн тонн"]},
+    {"id": "c-h02", "split": "holdout", "lang": "ru", "type": "exact_metric", "question": "Сколько минеральных удобрений произведено в 2024 году?", "answerable": true, "relevant_docs": ["chem-agro"], "expected_quote_fragments": ["60,2 млн"], "forbidden_claims": []},
+    {"id": "c-h03", "split": "holdout", "lang": "en", "type": "market", "question": "How much did the specialty coatings additives market grow in 2024?", "answerable": true, "relevant_docs": ["chem-specialty"], "expected_quote_fragments": ["3.8%"], "forbidden_claims": []},
+    {"id": "c-h04", "split": "holdout", "lang": "ru", "type": "compliance", "question": "Какие объекты химпроизводств подлежат производственному контролю?", "answerable": true, "relevant_docs": ["chem-hse"], "expected_quote_fragments": ["I и II классов"], "forbidden_claims": []},
+    {"id": "c-h05", "split": "holdout", "lang": "ru", "type": "market", "question": "Какой объем рынка катализаторов НПЗ в России?", "answerable": true, "relevant_docs": ["chem-catalysts"], "expected_quote_fragments": ["42 млрд"], "forbidden_claims": []},
+    {"id": "c-h06", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Какова доля графена в химическом экспорте России?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["12%"]},
+    {"id": "c-h07", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Планирует ли Сибур IPO на Гонконгской бирже в 2026?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["да, IPO объявлено"]},
+    {"id": "c-h08", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Какой у Сибур EBITDA margin за 2024?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["30%"]},
+    {"id": "c-h09", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Сколько патентов на биоразлагаемые полимеры у Фосагро?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["120 патентов"]},
+    {"id": "c-h10", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Кто поставляет катализаторы для НПЗ из Японии в РФ в 2025?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["JGC Catalysts"]},
+    {"id": "c-d01", "split": "dev", "lang": "ru", "type": "exact_metric", "question": "Какая загрузка мощностей полиэтилена?", "answerable": true, "relevant_docs": ["chem-petrochem"], "expected_quote_fragments": ["91%"], "forbidden_claims": []},
+    {"id": "c-d02", "split": "dev", "lang": "ru", "type": "unanswerable", "question": "Какой ESG рейтинг у Уралхима?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["AAA"]}
+  ]
+}

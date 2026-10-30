@@ -1,0 +1,21 @@
+{
+  "version": "incognita_ab_v1",
+  "protocol": "Astra: baseline (holdout) vs with-incognita; unanswerable FP must not grow",
+  "baseline_workspace": "holdout-final-a4f5d8",
+  "note": "Заполнить relevant_titles после ingest публикаций. До загрузки архива A/B не считается.",
+  "baseline_questions": [
+    {"id": "b1", "question": "Какой объем рынка грузовых перевозок СЗФО в 2024 году?", "answerable": true, "relevant_titles": ["Обзор рынка грузовых перевозок"], "expected_quote_fragments": ["412 млрд"]},
+    {"id": "b2", "question": "Где должны храниться базы данных с ПД граждан РФ по 152-ФЗ?", "answerable": true, "relevant_titles": ["152-ФЗ"], "expected_quote_fragments": ["территории РФ"]}
+  ],
+  "with_incognita_questions": [
+    {"id": "w1", "question": "<вопрос по публикации Incognita>", "answerable": true, "relevant_titles": ["<title публикации>"], "expected_quote_fragments": ["<цитата>"]}
+  ],
+  "unanswerable_questions": [
+    {"id": "u1", "question": "<вопрос без ответа в корпусе Incognita>", "answerable": false, "relevant_titles": [], "expected_quote_fragments": []}
+  ],
+  "go_nogo": {
+    "min_primary_source_rate": 0.4,
+    "max_fp_unanswerable": 0.25,
+    "min_recall_new": 0.8
+  }
+}

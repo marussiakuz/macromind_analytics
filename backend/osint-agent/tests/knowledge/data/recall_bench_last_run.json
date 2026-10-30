@@ -1,0 +1,2972 @@
+{
+  "meta": {
+    "date": "2026-10-21 17:19",
+    "n_docs": 24,
+    "n_chunks": 48,
+    "n_questions": 44,
+    "n_positive": 36,
+    "n_unanswerable": 8,
+    "embedding": "Qwen/Qwen3-Embedding-0.6B",
+    "embed_url": "http://127.0.0.1:18091",
+    "workspace": "bench-recall-65ec630619",
+    "dsn_host": "127.0.0.1:15432/knowledge"
+  },
+  "results": {
+    "text": {
+      "rows": [
+        {
+          "id": "q01",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-market"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0241,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q02",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-market"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0234,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q03",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-market"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.026,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q04",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi"
+          ],
+          "retrieved": [
+            "doc-rpa-roi"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q05",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi"
+          ],
+          "retrieved": [
+            "doc-rpa-roi"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0261,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q06",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi"
+          ],
+          "retrieved": [
+            "doc-rpa-roi"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.1594,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q07",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-payments"
+          ],
+          "retrieved": [
+            "doc-fintech-payments"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q08",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-payments"
+          ],
+          "retrieved": [
+            "doc-fintech-payments"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q09",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-payments"
+          ],
+          "retrieved": [
+            "doc-fintech-payments"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0264,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q10",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-risk"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0134,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q11",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-space-launch"
+          ],
+          "retrieved": [
+            "doc-space-launch"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0259,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q12",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-space-launch"
+          ],
+          "retrieved": [
+            "doc-space-launch"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0233,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q13",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-logistics-ports"
+          ],
+          "retrieved": [
+            "doc-logistics-ports"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q14",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-robot-trials"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0136,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q15",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-vendors",
+            "doc-rpa-market"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0163,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q16",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-vendors"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.013,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q17",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-nlp-embeddings",
+            "doc-ai-embeddings"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0163,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q18",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-risk"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.013,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q19",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-space-launch"
+          ],
+          "retrieved": [
+            "doc-space-launch"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q20",
+          "category": "analog_search",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-robot-sensors"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0131,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q21",
+          "category": "analog_search",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-transformers"
+          ],
+          "retrieved": [
+            "doc-ai-transformers"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.0259,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q22",
+          "category": "analog_search",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-cyber-zero-trust"
+          ],
+          "retrieved": [
+            "doc-cyber-zero-trust"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0233,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q23",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-bio-protein"
+          ],
+          "retrieved": [
+            "doc-bio-protein"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q24",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-quantum-error"
+          ],
+          "retrieved": [
+            "doc-quantum-error"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q25",
+          "category": "scientific",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-materials-supercond"
+          ],
+          "retrieved": [
+            "doc-materials-supercond"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q26",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-climate-carbon"
+          ],
+          "retrieved": [
+            "doc-climate-carbon"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0261,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q27",
+          "category": "scientific",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-energy-grid"
+          ],
+          "retrieved": [
+            "doc-energy-grid"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q28",
+          "category": "scientific",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-quantum-error"
+          ],
+          "retrieved": [
+            "doc-quantum-error"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0228,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q29",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-bio-protein"
+          ],
+          "retrieved": [
+            "doc-bio-protein"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0232,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q30",
+          "category": "exact_metrics",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-energy-grid"
+          ],
+          "retrieved": [
+            "doc-energy-grid"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.0261,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q31",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0131,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q32",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.013,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q33",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "control",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0163,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q34",
+          "category": "unanswerable",
+          "lang": "en",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0165,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q35",
+          "category": "unanswerable",
+          "lang": "en",
+          "split": "control",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0137,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q36",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0163,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q37",
+          "category": "unanswerable",
+          "lang": "en",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0196,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q38",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "control",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0131,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q39",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-transformers",
+            "doc-nlp-embeddings"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.013,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q40",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-embeddings"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.013,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q41",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-agents"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.0131,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q42",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-cyber-zero-trust"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.013,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q43",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-cyber-soc"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.013,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        },
+        {
+          "id": "q44",
+          "category": "cross_lingual",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi",
+            "doc-rpa-market"
+          ],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [],
+          "elapsed_s": 0.014,
+          "recall": 0.0,
+          "precision": 0.0,
+          "mrr": 0.0
+        }
+      ],
+      "summary": {
+        "n_questions": 44,
+        "n_positive": 36,
+        "n_unanswerable": 8,
+        "recall@10": 0.6389,
+        "precision@10": 0.6389,
+        "mrr@10": 0.6389,
+        "unanswerable_false_hit_rate": 0.0,
+        "by_split": {
+          "dev": {
+            "n": 24,
+            "recall": 0.625,
+            "precision": 0.625,
+            "mrr": 0.625
+          },
+          "control": {
+            "n": 12,
+            "recall": 0.6667,
+            "precision": 0.6667,
+            "mrr": 0.6667
+          }
+        },
+        "by_category": {
+          "analog_search": {
+            "n": 8,
+            "recall": 0.375
+          },
+          "cross_lingual": {
+            "n": 6,
+            "recall": 0.0
+          },
+          "exact_metrics": {
+            "n": 15,
+            "recall": 0.8667
+          },
+          "scientific": {
+            "n": 7,
+            "recall": 1.0
+          }
+        },
+        "mean_latency_s": 0.0224
+      }
+    },
+    "vector": {
+      "rows": [
+        {
+          "id": "q01",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-market",
+            "doc-rpa-roi",
+            "doc-fintech-payments",
+            "doc-rpa-vendors",
+            "doc-logistics-ports"
+          ],
+          "n_items": 7,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:7"
+          ],
+          "elapsed_s": 0.4453,
+          "recall": 1.0,
+          "precision": 0.2,
+          "mrr": 1.0
+        },
+        {
+          "id": "q02",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-market",
+            "doc-rpa-roi",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.416,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q03",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-market",
+            "doc-rpa-roi",
+            "doc-rpa-vendors",
+            "doc-fintech-payments"
+          ],
+          "n_items": 6,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:6"
+          ],
+          "elapsed_s": 0.3997,
+          "recall": 1.0,
+          "precision": 0.25,
+          "mrr": 1.0
+        },
+        {
+          "id": "q04",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi"
+          ],
+          "retrieved": [
+            "doc-rpa-roi",
+            "doc-rpa-market",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.5163,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q05",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi"
+          ],
+          "retrieved": [
+            "doc-rpa-roi",
+            "doc-rpa-market",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.4053,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q06",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi"
+          ],
+          "retrieved": [
+            "doc-rpa-roi",
+            "doc-rpa-market",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.4129,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q07",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-payments"
+          ],
+          "retrieved": [
+            "doc-fintech-payments",
+            "doc-rpa-market",
+            "doc-logistics-ports",
+            "doc-space-launch"
+          ],
+          "n_items": 4,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:4"
+          ],
+          "elapsed_s": 0.3505,
+          "recall": 1.0,
+          "precision": 0.25,
+          "mrr": 1.0
+        },
+        {
+          "id": "q08",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-payments"
+          ],
+          "retrieved": [
+            "doc-fintech-payments"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.5684,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q09",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-payments"
+          ],
+          "retrieved": [
+            "doc-fintech-payments"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4092,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q10",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-risk"
+          ],
+          "retrieved": [
+            "doc-fintech-risk"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4091,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q11",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-space-launch"
+          ],
+          "retrieved": [
+            "doc-space-launch",
+            "doc-logistics-ports"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4126,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q12",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-space-launch"
+          ],
+          "retrieved": [
+            "doc-space-launch"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.5096,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q13",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-logistics-ports"
+          ],
+          "retrieved": [
+            "doc-logistics-ports",
+            "doc-fintech-payments",
+            "doc-rpa-market"
+          ],
+          "n_items": 3,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:3"
+          ],
+          "elapsed_s": 0.5121,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q14",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-robot-trials"
+          ],
+          "retrieved": [
+            "doc-robot-trials",
+            "doc-robot-sensors"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4087,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q15",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-vendors",
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-vendors",
+            "doc-rpa-market",
+            "doc-rpa-roi"
+          ],
+          "n_items": 6,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:6"
+          ],
+          "elapsed_s": 0.4095,
+          "recall": 1.0,
+          "precision": 0.6666666666666666,
+          "mrr": 1.0
+        },
+        {
+          "id": "q16",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-vendors"
+          ],
+          "retrieved": [
+            "doc-rpa-vendors",
+            "doc-rpa-market"
+          ],
+          "n_items": 4,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:4"
+          ],
+          "elapsed_s": 0.3989,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q17",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-nlp-embeddings",
+            "doc-ai-embeddings"
+          ],
+          "retrieved": [
+            "doc-ai-embeddings",
+            "doc-nlp-embeddings",
+            "doc-ai-transformers"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.5234,
+          "recall": 1.0,
+          "precision": 0.6666666666666666,
+          "mrr": 1.0
+        },
+        {
+          "id": "q18",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-risk"
+          ],
+          "retrieved": [
+            "doc-fintech-risk"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4086,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q19",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-space-launch"
+          ],
+          "retrieved": [
+            "doc-space-launch"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4066,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q20",
+          "category": "analog_search",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-robot-sensors"
+          ],
+          "retrieved": [
+            "doc-robot-sensors"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4095,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q21",
+          "category": "analog_search",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-transformers"
+          ],
+          "retrieved": [
+            "doc-ai-transformers",
+            "doc-ai-embeddings",
+            "doc-nlp-embeddings"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.5257,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q22",
+          "category": "analog_search",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-cyber-zero-trust"
+          ],
+          "retrieved": [
+            "doc-cyber-zero-trust"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4989,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q23",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-bio-protein"
+          ],
+          "retrieved": [
+            "doc-bio-protein"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4121,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q24",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-quantum-error"
+          ],
+          "retrieved": [
+            "doc-quantum-error"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4064,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q25",
+          "category": "scientific",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-materials-supercond"
+          ],
+          "retrieved": [
+            "doc-materials-supercond",
+            "doc-quantum-error"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.372,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q26",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-climate-carbon"
+          ],
+          "retrieved": [
+            "doc-climate-carbon"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.5534,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q27",
+          "category": "scientific",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-energy-grid"
+          ],
+          "retrieved": [
+            "doc-energy-grid"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.512,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q28",
+          "category": "scientific",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-quantum-error"
+          ],
+          "retrieved": [
+            "doc-quantum-error",
+            "doc-materials-supercond"
+          ],
+          "n_items": 3,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:3"
+          ],
+          "elapsed_s": 0.3745,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q29",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-bio-protein"
+          ],
+          "retrieved": [
+            "doc-bio-protein"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4439,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q30",
+          "category": "exact_metrics",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-energy-grid"
+          ],
+          "retrieved": [
+            "doc-energy-grid"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.5127,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q31",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [
+            "doc-rpa-market"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.5119,
+          "false_hit": true,
+          "false_hit_items": 1
+        },
+        {
+          "id": "q32",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [
+            "vector_empty"
+          ],
+          "elapsed_s": 0.4024,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q33",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "control",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [
+            "vector_empty"
+          ],
+          "elapsed_s": 0.4062,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q34",
+          "category": "unanswerable",
+          "lang": "en",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [
+            "vector_empty"
+          ],
+          "elapsed_s": 0.4064,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q35",
+          "category": "unanswerable",
+          "lang": "en",
+          "split": "control",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [
+            "vector_empty"
+          ],
+          "elapsed_s": 0.5161,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q36",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [
+            "doc-materials-supercond"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4185,
+          "false_hit": true,
+          "false_hit_items": 1
+        },
+        {
+          "id": "q37",
+          "category": "unanswerable",
+          "lang": "en",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [
+            "doc-cyber-soc"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4095,
+          "false_hit": true,
+          "false_hit_items": 1
+        },
+        {
+          "id": "q38",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "control",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [
+            "doc-energy-grid"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4064,
+          "false_hit": true,
+          "false_hit_items": 1
+        },
+        {
+          "id": "q39",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-transformers",
+            "doc-nlp-embeddings"
+          ],
+          "retrieved": [
+            "doc-nlp-embeddings",
+            "doc-ai-transformers",
+            "doc-ai-embeddings"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.4129,
+          "recall": 1.0,
+          "precision": 0.6666666666666666,
+          "mrr": 1.0
+        },
+        {
+          "id": "q40",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-embeddings"
+          ],
+          "retrieved": [
+            "doc-ai-embeddings",
+            "doc-nlp-embeddings",
+            "doc-ai-transformers"
+          ],
+          "n_items": 4,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:4"
+          ],
+          "elapsed_s": 0.5126,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q41",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-agents"
+          ],
+          "retrieved": [
+            "doc-ai-agents"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4056,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q42",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-cyber-zero-trust"
+          ],
+          "retrieved": [
+            "doc-cyber-zero-trust"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4087,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q43",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-cyber-soc"
+          ],
+          "retrieved": [
+            "doc-cyber-soc"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.3607,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q44",
+          "category": "cross_lingual",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi",
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-roi",
+            "doc-rpa-market",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.5656,
+          "recall": 1.0,
+          "precision": 0.6666666666666666,
+          "mrr": 1.0
+        }
+      ],
+      "summary": {
+        "n_questions": 44,
+        "n_positive": 36,
+        "n_unanswerable": 8,
+        "recall@10": 1.0,
+        "precision@10": 0.7,
+        "mrr@10": 1.0,
+        "unanswerable_false_hit_rate": 0.5,
+        "by_split": {
+          "dev": {
+            "n": 24,
+            "recall": 1.0,
+            "precision": 0.6819,
+            "mrr": 1.0
+          },
+          "control": {
+            "n": 12,
+            "recall": 1.0,
+            "precision": 0.7361,
+            "mrr": 1.0
+          }
+        },
+        "by_category": {
+          "analog_search": {
+            "n": 8,
+            "recall": 1.0
+          },
+          "cross_lingual": {
+            "n": 6,
+            "recall": 1.0
+          },
+          "exact_metrics": {
+            "n": 15,
+            "recall": 1.0
+          },
+          "scientific": {
+            "n": 7,
+            "recall": 1.0
+          }
+        },
+        "mean_latency_s": 0.4429
+      }
+    },
+    "hybrid": {
+      "rows": [
+        {
+          "id": "q01",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-market",
+            "doc-rpa-roi",
+            "doc-fintech-payments",
+            "doc-rpa-vendors",
+            "doc-logistics-ports"
+          ],
+          "n_items": 7,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:7"
+          ],
+          "elapsed_s": 0.4089,
+          "recall": 1.0,
+          "precision": 0.2,
+          "mrr": 1.0
+        },
+        {
+          "id": "q02",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-market",
+            "doc-rpa-roi",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.4125,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q03",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-market",
+            "doc-rpa-roi",
+            "doc-rpa-vendors",
+            "doc-fintech-payments"
+          ],
+          "n_items": 6,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:6"
+          ],
+          "elapsed_s": 0.4206,
+          "recall": 1.0,
+          "precision": 0.25,
+          "mrr": 1.0
+        },
+        {
+          "id": "q04",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi"
+          ],
+          "retrieved": [
+            "doc-rpa-roi",
+            "doc-rpa-market",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.4947,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q05",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi"
+          ],
+          "retrieved": [
+            "doc-rpa-roi",
+            "doc-rpa-market",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.5156,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q06",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi"
+          ],
+          "retrieved": [
+            "doc-rpa-roi",
+            "doc-rpa-market",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.4088,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q07",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-payments"
+          ],
+          "retrieved": [
+            "doc-fintech-payments",
+            "doc-rpa-market",
+            "doc-logistics-ports",
+            "doc-space-launch"
+          ],
+          "n_items": 4,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:4"
+          ],
+          "elapsed_s": 0.4825,
+          "recall": 1.0,
+          "precision": 0.25,
+          "mrr": 1.0
+        },
+        {
+          "id": "q08",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-payments"
+          ],
+          "retrieved": [
+            "doc-fintech-payments"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.5422,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q09",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-payments"
+          ],
+          "retrieved": [
+            "doc-fintech-payments"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.5087,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q10",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-risk"
+          ],
+          "retrieved": [
+            "doc-fintech-risk"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4122,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q11",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-space-launch"
+          ],
+          "retrieved": [
+            "doc-space-launch",
+            "doc-logistics-ports"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4127,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q12",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-space-launch"
+          ],
+          "retrieved": [
+            "doc-space-launch"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4352,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q13",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-logistics-ports"
+          ],
+          "retrieved": [
+            "doc-logistics-ports",
+            "doc-fintech-payments",
+            "doc-rpa-market"
+          ],
+          "n_items": 3,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:3"
+          ],
+          "elapsed_s": 0.4829,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q14",
+          "category": "exact_metrics",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-robot-trials"
+          ],
+          "retrieved": [
+            "doc-robot-trials",
+            "doc-robot-sensors"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.5128,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q15",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-vendors",
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-vendors",
+            "doc-rpa-market",
+            "doc-rpa-roi"
+          ],
+          "n_items": 6,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:6"
+          ],
+          "elapsed_s": 0.4088,
+          "recall": 1.0,
+          "precision": 0.6666666666666666,
+          "mrr": 1.0
+        },
+        {
+          "id": "q16",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-vendors"
+          ],
+          "retrieved": [
+            "doc-rpa-vendors",
+            "doc-rpa-market"
+          ],
+          "n_items": 4,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:4"
+          ],
+          "elapsed_s": 0.4096,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q17",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-nlp-embeddings",
+            "doc-ai-embeddings"
+          ],
+          "retrieved": [
+            "doc-ai-embeddings",
+            "doc-nlp-embeddings",
+            "doc-ai-transformers"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.4127,
+          "recall": 1.0,
+          "precision": 0.6666666666666666,
+          "mrr": 1.0
+        },
+        {
+          "id": "q18",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-fintech-risk"
+          ],
+          "retrieved": [
+            "doc-fintech-risk"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.5127,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q19",
+          "category": "analog_search",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-space-launch"
+          ],
+          "retrieved": [
+            "doc-space-launch"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4057,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q20",
+          "category": "analog_search",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-robot-sensors"
+          ],
+          "retrieved": [
+            "doc-robot-sensors"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4095,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q21",
+          "category": "analog_search",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-transformers"
+          ],
+          "retrieved": [
+            "doc-ai-transformers",
+            "doc-ai-embeddings",
+            "doc-nlp-embeddings"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.4129,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q22",
+          "category": "analog_search",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-cyber-zero-trust"
+          ],
+          "retrieved": [
+            "doc-cyber-zero-trust"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.515,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q23",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-bio-protein"
+          ],
+          "retrieved": [
+            "doc-bio-protein"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.5063,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q24",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-quantum-error"
+          ],
+          "retrieved": [
+            "doc-quantum-error"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.409,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q25",
+          "category": "scientific",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-materials-supercond"
+          ],
+          "retrieved": [
+            "doc-materials-supercond",
+            "doc-quantum-error"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4096,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q26",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-climate-carbon"
+          ],
+          "retrieved": [
+            "doc-climate-carbon"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.5126,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q27",
+          "category": "scientific",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-energy-grid"
+          ],
+          "retrieved": [
+            "doc-energy-grid"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4203,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q28",
+          "category": "scientific",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-quantum-error"
+          ],
+          "retrieved": [
+            "doc-quantum-error",
+            "doc-materials-supercond"
+          ],
+          "n_items": 3,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:3"
+          ],
+          "elapsed_s": 0.3983,
+          "recall": 1.0,
+          "precision": 0.5,
+          "mrr": 1.0
+        },
+        {
+          "id": "q29",
+          "category": "scientific",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-bio-protein"
+          ],
+          "retrieved": [
+            "doc-bio-protein"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4097,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q30",
+          "category": "exact_metrics",
+          "lang": "en",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-energy-grid"
+          ],
+          "retrieved": [
+            "doc-energy-grid"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4094,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q31",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [
+            "doc-rpa-market"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4096,
+          "false_hit": true,
+          "false_hit_items": 1
+        },
+        {
+          "id": "q32",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [
+            "vector_empty"
+          ],
+          "elapsed_s": 0.5028,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q33",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "control",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [
+            "vector_empty"
+          ],
+          "elapsed_s": 0.4056,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q34",
+          "category": "unanswerable",
+          "lang": "en",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [
+            "vector_empty"
+          ],
+          "elapsed_s": 0.4097,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q35",
+          "category": "unanswerable",
+          "lang": "en",
+          "split": "control",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [],
+          "n_items": 0,
+          "empty_reason": "no_evidence_in_allowed_corpus",
+          "limitations": [
+            "vector_empty"
+          ],
+          "elapsed_s": 0.5159,
+          "false_hit": false,
+          "false_hit_items": 0
+        },
+        {
+          "id": "q36",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [
+            "doc-materials-supercond"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.6898,
+          "false_hit": true,
+          "false_hit_items": 1
+        },
+        {
+          "id": "q37",
+          "category": "unanswerable",
+          "lang": "en",
+          "split": "dev",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [
+            "doc-cyber-soc"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4489,
+          "false_hit": true,
+          "false_hit_items": 1
+        },
+        {
+          "id": "q38",
+          "category": "unanswerable",
+          "lang": "ru",
+          "split": "control",
+          "answerable": false,
+          "relevant": [],
+          "retrieved": [
+            "doc-energy-grid"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.403,
+          "false_hit": true,
+          "false_hit_items": 1
+        },
+        {
+          "id": "q39",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-transformers",
+            "doc-nlp-embeddings"
+          ],
+          "retrieved": [
+            "doc-nlp-embeddings",
+            "doc-ai-transformers",
+            "doc-ai-embeddings"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.5192,
+          "recall": 1.0,
+          "precision": 0.6666666666666666,
+          "mrr": 1.0
+        },
+        {
+          "id": "q40",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-embeddings"
+          ],
+          "retrieved": [
+            "doc-ai-embeddings",
+            "doc-nlp-embeddings",
+            "doc-ai-transformers"
+          ],
+          "n_items": 4,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:4"
+          ],
+          "elapsed_s": 0.512,
+          "recall": 1.0,
+          "precision": 0.3333333333333333,
+          "mrr": 1.0
+        },
+        {
+          "id": "q41",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-ai-agents"
+          ],
+          "retrieved": [
+            "doc-ai-agents"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.4022,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q42",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-cyber-zero-trust"
+          ],
+          "retrieved": [
+            "doc-cyber-zero-trust"
+          ],
+          "n_items": 2,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:2"
+          ],
+          "elapsed_s": 0.4095,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q43",
+          "category": "cross_lingual",
+          "lang": "ru",
+          "split": "dev",
+          "answerable": true,
+          "relevant": [
+            "doc-cyber-soc"
+          ],
+          "retrieved": [
+            "doc-cyber-soc"
+          ],
+          "n_items": 1,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:1"
+          ],
+          "elapsed_s": 0.457,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mrr": 1.0
+        },
+        {
+          "id": "q44",
+          "category": "cross_lingual",
+          "lang": "en",
+          "split": "control",
+          "answerable": true,
+          "relevant": [
+            "doc-rpa-roi",
+            "doc-rpa-market"
+          ],
+          "retrieved": [
+            "doc-rpa-roi",
+            "doc-rpa-market",
+            "doc-rpa-vendors"
+          ],
+          "n_items": 5,
+          "empty_reason": null,
+          "limitations": [
+            "few_candidates:5"
+          ],
+          "elapsed_s": 0.5711,
+          "recall": 1.0,
+          "precision": 0.6666666666666666,
+          "mrr": 1.0
+        }
+      ],
+      "summary": {
+        "n_questions": 44,
+        "n_positive": 36,
+        "n_unanswerable": 8,
+        "recall@10": 1.0,
+        "precision@10": 0.7,
+        "mrr@10": 1.0,
+        "unanswerable_false_hit_rate": 0.5,
+        "by_split": {
+          "dev": {
+            "n": 24,
+            "recall": 1.0,
+            "precision": 0.6819,
+            "mrr": 1.0
+          },
+          "control": {
+            "n": 12,
+            "recall": 1.0,
+            "precision": 0.7361,
+            "mrr": 1.0
+          }
+        },
+        "by_category": {
+          "analog_search": {
+            "n": 8,
+            "recall": 1.0
+          },
+          "cross_lingual": {
+            "n": 6,
+            "recall": 1.0
+          },
+          "exact_metrics": {
+            "n": 15,
+            "recall": 1.0
+          },
+          "scientific": {
+            "n": 7,
+            "recall": 1.0
+          }
+        },
+        "mean_latency_s": 0.4561
+      }
+    }
+  }
+}

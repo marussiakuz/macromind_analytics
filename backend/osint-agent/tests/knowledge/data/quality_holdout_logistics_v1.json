@@ -1,0 +1,86 @@
+{
+  "version": "quality_holdout_logistics_v1",
+  "domain": "logistics",
+  "spec": "Logistics holdout — same protocol as chemistry (2026-10-22).",
+  "metrics": {
+    "recall_at_10_target": 0.85,
+    "false_positive_rate_unanswerable_target_max": 0.25,
+    "quote_fidelity_target_min": 0.8
+  },
+  "documents": [
+    {
+      "id": "log-freight-szfo",
+      "title": "Рынок грузовых перевозок СЗФО 2024",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/log/szfo-freight",
+      "published_at": "2025-03-10",
+      "chunks": [
+        "Объем рынка автомобильных грузовых перевозок СЗФО в 2024 году оценен в 412 млрд рублей, рост к 2023 — 7,2%.",
+        "Крупнейшие игроки: Деловые Линии, ПЭК, Байкал Сервис. Доля топ-5 — около 28% рынка."
+      ]
+    },
+    {
+      "id": "log-telematics",
+      "title": "Телематика и IoT в автопарках",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/log/telematics",
+      "published_at": "2024-11-05",
+      "chunks": [
+        "Внедрение телематики снижает расход топлива на 6–11% и сокращает простои на 15%. Типичный срок окупаемости — 8–14 месяцев.",
+        "Распространённые провайдеры: Wialon, Скаут, Omnicomm. Требования ФСТЭК к защите данных транспорта ужесточены с 2023."
+      ]
+    },
+    {
+      "id": "log-drivers-hr",
+      "title": "Дефицит водителей категории E в РФ",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/log/drivers",
+      "published_at": "2025-01-20",
+      "chunks": [
+        "Дефицит водителей тяжёлых грузовиков в РФ — около 15–20% от потребности. Средний возраст водителя — 46 лет.",
+        "Фонд оплаты труда водителя вырос на 18% за 2024 год."
+      ]
+    },
+    {
+      "id": "log-warehouse",
+      "title": "Складская недвижимость класса A в России",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/log/warehouse-a",
+      "published_at": "2025-04-02",
+      "chunks": [
+        "Совокупный ввод складов класса A в 2024 году — 2,8 млн кв. м. Средняя ставка в Москве — 5 900 руб/кв. м/год.",
+        "Вакантность выросла до 9,4%. Основные девелоперы: ПИК, РГ-Девелопмент, PNK Group."
+      ]
+    },
+    {
+      "id": "log-last-mile",
+      "title": "Last-mile доставка e-commerce 2025",
+      "lang": "ru",
+      "source_type": "web",
+      "url": "https://hold.example/log/last-mile",
+      "published_at": "2025-02-15",
+      "chunks": [
+        "Доля маркетплейсов в last-mile превысила 61%. Средняя стоимость доставки — 148 рублей на заказ.",
+        "Пункты выдачи покрывают 78% заказов. Срок доставки в городах-миллионниках — 1,4 дня."
+      ]
+    }
+  ],
+  "questions": [
+    {"id": "l-h01", "split": "holdout", "lang": "ru", "type": "exact_metric", "question": "Какой объем рынка грузовых перевозок СЗФО в 2024 году?", "answerable": true, "relevant_docs": ["log-freight-szfo"], "expected_quote_fragments": ["412 млрд"], "forbidden_claims": ["1 трлн"]},
+    {"id": "l-h02", "split": "holdout", "lang": "ru", "type": "tech", "question": "На сколько снижает расход топлива телематика в автопарках?", "answerable": true, "relevant_docs": ["log-telematics"], "expected_quote_fragments": ["6–11%", "6-11%"], "forbidden_claims": ["на 40%"]},
+    {"id": "l-h03", "split": "holdout", "lang": "ru", "type": "hr", "question": "Какой дефицит водителей тяжёлых грузовиков в РФ?", "answerable": true, "relevant_docs": ["log-drivers-hr"], "expected_quote_fragments": ["15–20%", "15-20%"], "forbidden_claims": ["дефицита нет"]},
+    {"id": "l-h04", "split": "holdout", "lang": "ru", "type": "market", "question": "Сколько складов класса A введено в 2024 году?", "answerable": true, "relevant_docs": ["log-warehouse"], "expected_quote_fragments": ["2,8 млн"], "forbidden_claims": []},
+    {"id": "l-h05", "split": "holdout", "lang": "ru", "type": "market", "question": "Какая доля маркетплейсов в last-mile доставке?", "answerable": true, "relevant_docs": ["log-last-mile"], "expected_quote_fragments": ["61%"], "forbidden_claims": []},
+    {"id": "l-h06", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Какова доля автономных грузовиков в перевозках России?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["12%"]},
+    {"id": "l-h07", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Планирует ли Яндекс Маркет строить свой флот кораблей?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["да, флот заказан"]},
+    {"id": "l-h08", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Какой у Деловых Линий EBITDA margin за 2024?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["28%"]},
+    {"id": "l-h09", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Сколько электрогрузовиков в парке СДЭК?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["500 штук"]},
+    {"id": "l-h10", "split": "holdout", "lang": "ru", "type": "unanswerable", "question": "Какой патент у ПЭК на алгоритм маршрутизации?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["патент RU2700000"]},
+    {"id": "l-d01", "split": "dev", "lang": "ru", "type": "exact_metric", "question": "Какая средняя стоимость last-mile доставки?", "answerable": true, "relevant_docs": ["log-last-mile"], "expected_quote_fragments": ["148"], "forbidden_claims": []},
+    {"id": "l-d02", "split": "dev", "lang": "ru", "type": "unanswerable", "question": "Какой ESG рейтинг у ПЭК?", "answerable": false, "relevant_docs": [], "expected_quote_fragments": [], "forbidden_claims": ["BBB"]}
+  ]
+}

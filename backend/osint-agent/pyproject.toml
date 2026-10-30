@@ -1,0 +1,70 @@
+[project]
+name = "osint-agent"
+version = "0.1.0"
+description = "OSINT Agent for MacroMind Analytics — automated Pre-Due Diligence"
+authors = [
+    {name = "MacroMind Analytics", email = "team@macromind.ru"},
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "httpx>=0.26.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "psycopg[binary]>=3.1,<4",
+    "neo4j>=5.17.0",
+    "redis>=5.0.0",
+    "structlog>=24.1.0",
+    "python-dotenv>=1.0.0",
+    "lxml>=5.1.0",
+    "rapidfuzz>=3.6.0",
+    "python-whois>=0.9.4",
+    "dnspython>=2.6.0",
+    "pdfplumber>=0.10.0",
+    "python-docx>=1.0.0",
+    "python-pptx>=0.6.21",
+    "openpyxl>=3.1.0",
+    "Pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "respx>=0.21.0",
+    "ruff>=0.1.0",
+    "mypy>=1.8.0",
+    "reportlab>=4.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "unit: Unit tests (no external dependencies)",
+    "integration: Integration tests (require external APIs)",
+    "integration_real: Integration tests with real external APIs",
+    "e2e: End-to-end tests",
+    "slow: Slow tests",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true

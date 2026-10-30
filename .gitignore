@@ -1,0 +1,57 @@
+# Local credentials and service configuration
+.env
+.env.*
+!.env.example
+!.env.*.example
+/venv
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+
+# Dependencies and generated artifacts
+**/.venv/
+**/venv/
+**/node_modules/
+**/dist/
+**/build/
+**/*.egg-info/
+**/__pycache__/
+*.py[cod]
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+**/.vite/
+**/.playwright/
+**/.playwright-cli/
+**/test-results/
+**/playwright-report/
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+*.log
+
+# Runtime company data, private documents, caches, databases
+/data/knowledge-objects/
+/data/incognita/*
+!/data/incognita/questions_ab_template.json
+/backend/osint-agent/data/*
+!/backend/osint-agent/data/sites.json
+/backend/person-osint-agent/data/
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.dump
+*.sql.gz
+**/backups/
+**/models/hf/
+
+# Local editor/OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*~

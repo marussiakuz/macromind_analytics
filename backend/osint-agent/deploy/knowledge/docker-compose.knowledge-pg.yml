@@ -1,0 +1,39 @@
+# Knowledge / RAG deploy — ONLY pgvector (Task2 §3, §4).
+# Do not start the whole project compose. This file is intentionally minimal.
+# Pinned image: pgvector/pgvector:pg16 (no :latest).
+
+services:
+  knowledge-pg:
+    image: pgvector/pgvector:pg16
+    container_name: macromind-knowledge-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: knowledge
+      POSTGRES_USER: knowledge
+      # override via .env — do not commit real secrets
+      POSTGRES_PASSWORD: ${KNOWLEDGE_PG_PASSWORD:-knowledge_local_dev}
+    ports:
+      # localhost-only in dev; on server 1 bind 10.77.0.1 after pg_hba is locked
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - knowledge_pg:/var/lib/postgresql/data
+    command:
+      - postgres
+      - -c
+      - shared_buffers=512MB
+      - -c
+      - work_mem=8MB
+      - -c
+      - max_connections=40
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U knowledge -d knowledge"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+
+volumes:
+  knowledge_pg:

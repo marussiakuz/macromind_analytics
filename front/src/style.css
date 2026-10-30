@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.progress-bar {
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.btn-primary {
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: scale(1.02);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.tab-active {
+  border-bottom: 2px solid #4D966F;
+  color: #4D966F;
+}
+
+.notification-enter {
+  animation: notificationEnter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes notificationEnter {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.notification-exit {
+  animation: notificationExit 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes notificationExit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.modal-overlay {
+  backdrop-filter: blur(8px);
+}
+
+.stagger-item {
+  opacity: 0;
+  animation: staggerFadeIn 0.4s ease-out forwards;
+}
+
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pulse-dot {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2C2C2C;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4A4A4A;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5A5A5A;
+}
+
+.login-btn {
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background: #3D7D5C !important;
+}
+
+.input-field {
+  transition: all 0.2s ease;
+}
+
+.input-field:focus {
+  border-color: #4D966F;
+  box-shadow: 0 0 0 3px rgba(77, 150, 111, 0.18);
+}
+
+/* ── Dark theme inputs — only elements with .input-field class ───── */
+.input-field {
+  background-color: #2A2A2A;
+  color: #F0F0F0;
+  border-color: #484848;
+}
+.input-field::placeholder {
+  color: #636366;
+}
+.input-field:focus {
+  background-color: #333333;
+}
+
+/* ── Graph visualization ────────────────────────────────────────── */
+#graph-container {
+  background-color: #1a1a1a;
+}
+
+#graph-container .vis-network {
+  outline: none;
+}
+
+#graph-filters label {
+  color: #b0b0b0;
+}
+
+#graph-filters input[type="checkbox"] {
+  accent-color: #4ECDC4;
+}
+
+/* Stagger animation for graph elements */
+.graph-node-enter {
+  animation: graphNodeEnter 0.3s ease-out;
+}
+
+@keyframes graphNodeEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

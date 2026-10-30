@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экспертиза — MacroMindAnalytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            boxShadow: { soft: '0 4px 24px rgba(0,0,0,0.06)', medium: '0 8px 32px rgba(0,0,0,0.10)' }
+          }
+        }
+      }
+    </script>
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+        .module-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .module-card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+        .module-card.active { border-color: #4D966F; background: linear-gradient(135deg, #f0f7f3 0%, #ffffff 100%); }
+        .module-card.completed { border-color: #10b981; }
+        .hypothesis-card { transition: all 0.2s ease; }
+        .hypothesis-card:hover { background: #f8fafc; }
+        .tooltip-box { position: relative; }
+        .tooltip-box .tooltip-content {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 260px;
+            z-index: 50;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .tooltip-box .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #1e293b;
+        }
+        .tooltip-box:hover .tooltip-content { display: block; }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .gradient-border {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            padding: 2px;
+            border-radius: 16px;
+        }
+        .gradient-border-inner {
+            background: white;
+            border-radius: 14px;
+        }
+        .dependency-line { stroke: #cbd5e1; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+        .dependency-line.active { stroke: #4D966F; stroke-width: 3; }
+        .nav-step { transition: all 0.3s ease; }
+        .nav-step.completed { color: #10b981; border-color: #10b981; }
+        .nav-step.active { color: #4D966F; border-color: #4D966F; background: #f0f7f3; }
+        textarea:focus, input:focus, select:focus { outline: none; box-shadow: 0 0 0 3px rgba(77, 150, 111, 0.15); border-color: #4D966F; }
+        .risk-badge { font-size: 10px; padding: 2px 8px; border-radius: 9999px; font-weight: 600; }
+        .empty-state-icon { font-size: 48px; opacity: 0.3; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .preview-section { transition: all 0.3s ease; }
+        .preview-section:hover { background: #f8fafc; }
+        .tab-btn { transition: all 0.2s ease; border-bottom: 2px solid transparent; }
+        .tab-btn.active { border-bottom-color: #4D966F; color: #4D966F; font-weight: 600; }
+        .progress-ring { transform: rotate(-90deg); }
+        .progress-ring-circle { transition: stroke-dashoffset 0.5s ease; }
+        /* Согласование с MacroMindAnalytics — Startup */
+        body.kviz-app { background: #f9fafb; }
+        .gradient-border { background: linear-gradient(135deg, #4D966F, #68B589) !important; }
+        .nav-step.active { color: #4D966F !important; border-color: #4D966F !important; background: #f0f7f3 !important; }
+        .module-card.active { border-color: #4D966F !important; background: linear-gradient(135deg, #f0f7f3 0%, #ffffff 100%) !important; }
+        .dependency-line.active { stroke: #4D966F !important; }
+        textarea:focus, input:focus, select:focus {
+            box-shadow: 0 0 0 3px rgba(77, 150, 111, 0.15) !important;
+            border-color: #4D966F !important;
+        }
+        .tab-btn.active { border-bottom-color: #4D966F !important; color: #4D966F !important; }
+        .bg-blue-600 { background-color: #4D966F !important; }
+        .hover\:bg-blue-700:hover { background-color: #3D7D5C !important; }
+        .text-blue-600 { color: #4D966F !important; }
+        .hover\:text-blue-700:hover { color: #3D7D5C !important; }
+        .bg-blue-50 { background-color: #f0f7f3 !important; }
+        .bg-blue-100 { background-color: #dff0e8 !important; }
+        .text-blue-600 { color: #4D966F !important; }
+        .text-blue-700 { color: #3D7D5C !important; }
+        .text-blue-800 { color: #1A3D2A !important; }
+        .text-blue-900 { color: #163325 !important; }
+        .border-blue-400 { border-color: #4D966F !important; }
+        .hover\:border-blue-400:hover { border-color: #4D966F !important; }
+        .border-blue-100 { border-color: rgba(77, 150, 111, 0.12) !important; }
+        .border-blue-200 { border-color: rgba(77, 150, 111, 0.22) !important; }
+        .border-blue-300 { border-color: rgba(77, 150, 111, 0.35) !important; }
+        .border-blue-600 { border-color: #4D966F !important; }
+        .hover\:bg-blue-50:hover { background-color: #f0f7f3 !important; }
+        .from-blue-600 { --tw-gradient-from: #4D966F !important; }
+        .to-violet-600 { --tw-gradient-to: #68B589 !important; }
+        .stroke-blue-600 { stroke: #4D966F !important; }
+        #progressCircle { stroke: #4D966F !important; }
+        /* Карточки как в основном приложении */
+        #polygonInterface .bg-white.rounded-2xl,
+        #calibrationQuiz .gradient-border-inner { box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+        /* Модалка предпросмотра: явная высота цепочки flex, чтобы работал скролл контента */
+        #committeeModal .committee-modal-panel {
+            max-height: min(92vh, 52rem);
+            height: min(92vh, 52rem);
+        }
+        #committeeModal #committeeContent {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen kviz-app">
+    <!-- Header -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="/" class="flex items-center gap-2.5 min-w-0 hover:opacity-90 transition-opacity">
+                    <img src="/logo-macromind.png" alt="" width="36" height="36"
+                         class="h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-lg object-contain shadow-sm ring-1 ring-black/[0.06]"
+                         decoding="async" />
+                    <span class="text-lg font-semibold text-gray-900 truncate">MacroMindAnalytics</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    <a href="/" class="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors pl-4 border-l border-gray-100">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                        <span class="hidden sm:inline">К приложению</span>
+                    </a>
+                    <div class="flex items-center gap-3 pl-4 border-l border-gray-100">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium" style="background: linear-gradient(135deg, #4D966F, #68B589);">С</div>
+                        <button onclick="showHelp()" class="tooltip-box p-2 hover:bg-gray-100 rounded-lg transition text-gray-500 hover:text-gray-900">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <div class="tooltip-content">Правила работы: исследуйте гипотезы, связывайте модули, формируйте нарратив для фонда</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Calibration Quiz -->
+        <div id="calibrationQuiz" class="fade-in mb-8">
+            <div class="gradient-border">
+                <div class="gradient-border-inner p-8">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-2">Расскажите о проекте</h2>
+                            <p class="text-gray-600 mb-6">Ответьте на 3 вопроса — система адаптирует сценарий экспертизы под вашу стадию и профиль</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <!-- Industry -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Отрасль / профиль</label>
+                                    <select id="industrySelect" class="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-sm">
+                                        <option value="">Выберите...</option>
+                                        <option value="hardware">Hardware / Производство</option>
+                                        <option value="biotech">Биотехнологии / Фарма</option>
+                                        <option value="chemicals">Химия / Нефтехимия</option>
+                                        <option value="it">IT / Софт / AI</option>
+                                        <option value="food">Пищепром</option>
+                                        <option value="materials">Новые материалы</option>
+                                        <option value="energy">Энергетика</option>
+                                        <option value="other">Другое</option>
+                                    </select>
+                                </div>
+                                <!-- Stage -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Стадия проекта</label>
+                                    <select id="stageSelect" class="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-sm">
+                                        <option value="">Выберите...</option>
+                                        <option value="idea">Идея / Лабораторное исследование</option>
+                                        <option value="prototype">Закончен НИОКР / Прототип</option>
+                                        <option value="pilot">Пилотное внедрение</option>
+                                        <option value="series">Опытное / серийное производство</option>
+                                    </select>
+                                </div>
+                                <!-- Site -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Производственная площадка</label>
+                                    <select id="siteSelect" class="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-sm">
+                                        <option value="">Выберите...</option>
+                                        <option value="none">Нет / в поиске</option>
+                                        <option value="existing">Есть готовая площадка</option>
+                                        <option value="reconstruction">Требует реконфигурации</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm text-gray-500 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Можно пропустить — получите универсальный сценарий
+                                </p>
+                                <button onclick="startCalibration()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition flex items-center gap-2">
+                                    <span>Продолжить</span>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main workspace (hidden until calibration) -->
+        <div id="polygonInterface" class="hidden">
+            
+            <!-- Progress Overview -->
+            <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-8 fade-in">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="relative w-16 h-16">
+                            <svg class="w-16 h-16 progress-ring" viewBox="0 0 36 36">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                                <path id="progressCircle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#3b82f6" stroke-width="3" stroke-dasharray="0, 100" stroke-linecap="round" class="progress-ring-circle"/>
+                            </svg>
+                            <span id="progressPercent" class="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-900">0%</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Глубина проработки</h3>
+                            <p class="text-sm text-gray-500" id="progressText">Выберите модуль и начните формулировать гипотезы</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Module Navigation -->
+                <div class="flex items-center gap-3 mt-6">
+                    <div class="flex gap-2 overflow-x-auto pb-2 flex-1 min-w-0" id="moduleNav">
+                        <button onclick="selectModule(0)" class="nav-step flex-shrink-0 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium hover:bg-gray-50 transition" data-module="0">
+                            📦 Продукт
+                        </button>
+                        <button onclick="selectModule(1)" class="nav-step flex-shrink-0 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium hover:bg-gray-50 transition" data-module="1">
+                            ⚙️ Технология
+                        </button>
+                        <button onclick="selectModule(2)" class="nav-step flex-shrink-0 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium hover:bg-gray-50 transition" data-module="2">
+                            📋 Проработанность
+                        </button>
+                        <button onclick="selectModule(3)" class="nav-step flex-shrink-0 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium hover:bg-gray-50 transition" data-module="3">
+                            🔧 Ресурсы
+                        </button>
+                        <button onclick="selectModule(4)" class="nav-step flex-shrink-0 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium hover:bg-gray-50 transition" data-module="4">
+                            📍 Стадия
+                        </button>
+                        <button onclick="selectModule(5)" class="nav-step flex-shrink-0 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium hover:bg-gray-50 transition" data-module="5">
+                            🎯 Риски и выводы
+                        </button>
+                    </div>
+                    <button onclick="submitToFund()" id="submitToFundBtn" class="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition text-sm whitespace-nowrap">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                        Отправить в фонд
+                    </button>
+                </div>
+            </div>
+
+            <!-- Module Content Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Main Content -->
+                <div class="lg:col-span-2">
+                    <div id="moduleContent" class="bg-white rounded-2xl border border-gray-200 p-6 min-h-[600px]">
+                        <!-- Dynamic content loaded here -->
+                        <div id="modulePlaceholder" class="flex flex-col items-center justify-center h-96 text-center">
+                            <div class="empty-state-icon mb-4">🎯</div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Выберите модуль для работы</h3>
+                            <p class="text-gray-500 max-w-md mb-6">Каждый модуль содержит исследовательские гипотезы вместо жёстких чек-листов. Формулируйте аргументы, связывайте блоки, фиксируйте допущения.</p>
+                            <div class="flex gap-3">
+                                <button onclick="selectModule(0)" class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1">
+                                    Начать с Продукта
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </button>
+                                <span class="text-gray-300">|</span>
+                                <button onclick="selectModule(5)" class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1">
+                                    Начать с Рисков
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="lg:col-span-1 space-y-6">
+                    
+                    <!-- Quick Actions -->
+                    <div class="rounded-2xl shadow-soft" style="background: linear-gradient(135deg, #4D966F, #68B589); padding: 2px;">
+                        <div class="bg-white rounded-[14px] p-6">
+                        <h4 class="font-bold mb-3 text-gray-900">Быстрые действия</h4>
+                        <div class="space-y-2">
+                            <button onclick="exportResume()" class="w-full text-left px-4 py-2.5 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm transition flex items-center gap-3 text-gray-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Экспорт в Резюме проекта
+                            </button>
+                            <button onclick="showCommitteeView()" class="w-full text-left px-4 py-2.5 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm transition flex items-center gap-3 text-gray-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                Предпросмотр для фонда
+                            </button>
+                            <button onclick="resetPolygon()" class="w-full text-left px-4 py-2.5 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm transition flex items-center gap-3 text-gray-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                Сбросить
+                            </button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Committee View Modal -->
+    <div id="committeeModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="committee-modal-panel bg-white rounded-2xl max-w-3xl w-full flex flex-col shadow-xl overflow-hidden">
+            <div class="flex flex-shrink-0 px-6 pt-6 pb-4 border-b border-gray-100">
+                <h2 class="text-2xl font-bold text-gray-900">Взгляд инвестиционного комитета</h2>
+            </div>
+            <div id="committeeContent" class="space-y-6 px-6 py-4">
+                <!-- Dynamic content -->
+            </div>
+            <div class="flex-shrink-0 px-6 py-4 border-t border-gray-200 bg-white">
+                <button type="button" onclick="closeCommitteeModal()" class="w-full px-6 py-2.5 border-2 border-blue-600 text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition" style="border-color:#4D966F;color:#4D966F;">Выйти из предпросмотра</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Как это работает</h2>
+                <button onclick="closeHelp()" class="p-2 hover:bg-gray-100 rounded-lg transition">
+                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="space-y-4 text-gray-600">
+                <div class="flex gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-sm">1</div>
+                    <div><strong class="text-gray-900">Гипотезы вместо чек-листов.</strong> Каждый модуль содержит открытые вопросы. Формулируйте ответ текстом или файлом; для отдельных вопросов доступны таблица сравнения и матрица рисков.</div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-sm">2</div>
+                    <div><strong class="text-gray-900">Связывайте модули.</strong> Система автоматически подсвечивает зависимости между решениями. Это помогает выстроить целостную картину для фонда.</div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-sm">3</div>
+                    <div><strong class="text-gray-900">Фиксируйте допущения.</strong> Если данные ещё не получены — зафиксируйте допущение. Это создаёт прозрачную точку для будущей валидации.</div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-sm">4</div>
+                    <div><strong class="text-gray-900">Проверяйте через «Предпросмотр для фонда».</strong> Режим показывает, как вашу аргументацию прочитает инвестиционный комитет. Не оценка готовности, а картина восприятия.</div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-sm">5</div>
+                    <div><strong class="text-gray-900">Экспортируйте в Резюме проекта.</strong> По мере работы формируется черновик Резюме. Экспортируйте его в удобный формат для подачи в фонд.</div>
+                </div>
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <button onclick="closeHelp()" class="w-full py-3 text-white rounded-lg font-semibold transition" style="background:#4D966F;" onmouseover="this.style.background='#3D7D5C'" onmouseout="this.style.background='#4D966F'">Понятно, начинаю работу</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ==================== DATA ====================
+    const modulesData = [
+        {
+            id: "product",
+            title: "Продукт",
+            icon: "📦",
+            docSectionRef: "ТЗ раздел 1, Резюме разделы 2-4,7",
+            resumeSections: ["2", "3", "4", "7"],
+            priority: "high",
+            hypotheses: [
+                {
+                    id: "h1_1",
+                    prompt: "Ваш продукт решает проблему клиента с измеримым преимуществом. Какие количественные выгоды вы уже подтвердили?",
+                    responseMode: "text",
+                    linkedResume: ["2", "3"],
+                    dependencyTrigger: ["resources", "risks"]
+                },
+                {
+                    id: "h1_2",
+                    prompt: "Вы понимаете, кто ваши конкуренты и чем вы отличаетесь. По каким 2–3 параметрам вы сравниваете себя с аналогами?",
+                    responseMode: "comparison_table",
+                    linkedResume: ["7"],
+                    dependencyTrigger: []
+                },
+                {
+                    id: "h1_3",
+                    prompt: "Как вы проверяли, что проблема действительно важна для рынка? Какие источники данных использовали?",
+                    responseMode: "text",
+                    linkedResume: ["4"],
+                    dependencyTrigger: []
+                }
+            ]
+        },
+        {
+            id: "technology",
+            title: "Технологическая схема",
+            icon: "⚙️",
+            docSectionRef: "ТЗ раздел 2, Резюме разделы 3,12",
+            resumeSections: ["3", "12"],
+            priority: "medium",
+            hypotheses: [
+                {
+                    id: "h2_1",
+                    prompt: "Опишите сквозную технологическую схему. Как сырьё превращается в готовый продукт?",
+                    responseMode: "text",
+                    linkedResume: ["3"],
+                    dependencyTrigger: ["resources", "stage"]
+                },
+                {
+                    id: "h2_2",
+                    prompt: "Какие ограничения накладывает выбранная технология? (энергопотребление, чистота помещений, утилизация и т.д.)",
+                    responseMode: "text",
+                    linkedResume: ["3"],
+                    dependencyTrigger: ["resources"]
+                },
+                {
+                    id: "h2_3",
+                    prompt: "Какие разрешения/сертификаты критичны для запуска? Есть ли дорожная карта их получения?",
+                    responseMode: "text",
+                    linkedResume: ["12"],
+                    dependencyTrigger: ["risks"]
+                }
+            ]
+        },
+        {
+            id: "readiness",
+            title: "Технологическая проработанность",
+            icon: "📋",
+            docSectionRef: "ТЗ раздел 3, Резюме разделы 11,13",
+            resumeSections: ["11", "13"],
+            priority: "medium",
+            hypotheses: [
+                {
+                    id: "h3_1",
+                    prompt: "Какая конструкторская и технологическая документация уже готова? Что в работе?",
+                    responseMode: "text",
+                    linkedResume: ["13"],
+                    dependencyTrigger: []
+                },
+                {
+                    id: "h3_2",
+                    prompt: "Что именно вы проверяли в последних испытаниях? Какие результаты можно показать фонду?",
+                    responseMode: "file",
+                    linkedResume: ["13"],
+                    dependencyTrigger: []
+                },
+                {
+                    id: "h3_3",
+                    prompt: "Как защищена ваша инновация? Патенты, заявки, режим ноу-хау?",
+                    responseMode: "text",
+                    linkedResume: ["11"],
+                    dependencyTrigger: ["risks"]
+                }
+            ]
+        },
+        {
+            id: "resources",
+            title: "Ресурсы процесса",
+            icon: "🔧",
+            docSectionRef: "ТЗ раздел 4, Резюме разделы 9,14",
+            resumeSections: ["9", "14"],
+            priority: "high",
+            hypotheses: [
+                {
+                    id: "h4_1",
+                    prompt: "Какое оборудование участвует на каждом этапе? Достаточно ли его мощности для заявленной программы?",
+                    responseMode: "text",
+                    linkedResume: ["14"],
+                    dependencyTrigger: ["technology", "stage"]
+                },
+                {
+                    id: "h4_2",
+                    prompt: "Откуда берётся сырьё и материалы? Возможно ли обеспечить поставки в РФ по нужным спецификациям?",
+                    responseMode: "text",
+                    linkedResume: ["3"],
+                    dependencyTrigger: ["product", "risks"]
+                },
+                {
+                    id: "h4_3",
+                    prompt: "Какие 3 ключевые компетенции уже в команде? Что в поиске и как планируете закрывать?",
+                    responseMode: "text",
+                    linkedResume: ["9"],
+                    dependencyTrigger: []
+                },
+                {
+                    id: "h4_4",
+                    prompt: "Какие требования к экологической и промышленной безопасности? Нужны ли разрешения Росприроднадзора/Ростехнадзора?",
+                    responseMode: "text",
+                    linkedResume: ["12"],
+                    dependencyTrigger: ["risks"]
+                }
+            ]
+        },
+        {
+            id: "stage",
+            title: "Стадия реализации",
+            icon: "📍",
+            docSectionRef: "ТЗ раздел 5, Резюме разделы 1,8,10,15",
+            resumeSections: ["1", "8", "10", "15"],
+            priority: "high",
+            hypotheses: [
+                {
+                    id: "h5_1",
+                    prompt: "Опишите этапы реализации проекта. Что уже сделано, что впереди? Как этапы согласованы с производственной программой?",
+                    responseMode: "text",
+                    linkedResume: ["1"],
+                    dependencyTrigger: []
+                },
+                {
+                    id: "h5_2",
+                    prompt: "Соответствует ли производственная площадка требованиям? (коммуникации, логистика, площади)",
+                    responseMode: "text",
+                    linkedResume: ["14"],
+                    dependencyTrigger: ["resources"]
+                },
+                {
+                    id: "h5_3",
+                    prompt: "На какие конкретные цели пойдут инвестиции? Какие допущения лежат в основе прогноза продаж?",
+                    responseMode: "text",
+                    linkedResume: ["8", "10"],
+                    dependencyTrigger: ["risks"]
+                },
+                {
+                    id: "h5_4",
+                    prompt: "Корпоративная структура: есть ли иностранные юрлица, опционы, корпоративные договоры? Как это влияет на инвестиционную привлекательность?",
+                    responseMode: "text",
+                    linkedResume: ["15"],
+                    dependencyTrigger: []
+                }
+            ]
+        },
+        {
+            id: "risks",
+            title: "Выводы и риски",
+            icon: "🎯",
+            docSectionRef: "ТЗ раздел 6, Резюме разделы 5,6",
+            resumeSections: ["5", "6"],
+            priority: "critical",
+            hypotheses: [
+                {
+                    id: "h6_1",
+                    prompt: "Какие 3 риска вы считаете наиболее критичными для проекта? Для каждого: вероятность (1-10), влияние, план снижения.",
+                    responseMode: "risk_matrix",
+                    linkedResume: ["5"],
+                    dependencyTrigger: []
+                },
+                {
+                    id: "h6_2",
+                    prompt: "Почему ваша бизнес-модель устойчива? Что является объектом коммерциализации — продукт или услуга?",
+                    responseMode: "text",
+                    linkedResume: ["6"],
+                    dependencyTrigger: ["product"]
+                },
+                {
+                    id: "h6_3",
+                    prompt: "Какие допущения вы сделали в ходе экспертизы? Какие из них требуют обязательной проверки перед инвестициями?",
+                    responseMode: "text",
+                    linkedResume: ["5"],
+                    dependencyTrigger: []
+                }
+            ]
+        }
+    ];
+
+    // ==================== STATE ====================
+    let state = {
+        calibrated: false,
+        industry: "",
+        stage: "",
+        site: "",
+        currentModule: null,
+        modules: {},
+        dependencies: [],
+        assumptions: [],
+        hypotheses: {}
+    };
+
+    // Initialize modules state
+    modulesData.forEach(m => {
+        state.modules[m.id] = {
+            status: "draft",
+            completedHypotheses: [],
+            assumptions: []
+        };
+    });
+
+    // ==================== CALIBRATION ====================
+    function startCalibration() {
+        state.industry = document.getElementById('industrySelect').value;
+        state.stage = document.getElementById('stageSelect').value;
+        state.site = document.getElementById('siteSelect').value;
+        state.calibrated = true;
+
+        // Adjust priorities based on stage
+        if (state.stage === "idea" || state.stage === "prototype") {
+            modulesData[0].priority = "critical"; // Product first
+            modulesData[2].priority = "high";     // Readiness
+            modulesData[3].priority = "medium";   // Resources can wait
+        } else if (state.stage === "series") {
+            modulesData[3].priority = "critical"; // Resources critical
+            modulesData[5].priority = "high";     // Risks
+        }
+
+        document.getElementById('calibrationQuiz').style.display = 'none';
+        document.getElementById('polygonInterface').classList.remove('hidden');
+
+        loadMockData();
+        updateProgress();
+
+        // Auto-select first priority module
+        const priorityOrder = ["critical", "high", "medium"];
+        let firstModule = 0;
+        for (let p of priorityOrder) {
+            const idx = modulesData.findIndex(m => m.priority === p);
+            if (idx !== -1) { firstModule = idx; break; }
+        }
+        selectModule(firstModule);
+    }
+
+    let currentResponseModes = {};
+
+    function getEffectiveMode(hyp) {
+        let m = currentResponseModes[hyp.id] !== undefined ? currentResponseModes[hyp.id] : hyp.responseMode;
+        // ТЗ5: режимы «Ссылка» и «Допущение» сняты с UI — отображаем как текст
+        if (m === 'link' || m === 'assumption') m = 'text';
+        return m;
+    }
+
+    function onHypothesisFileChange(hypId) {
+        var el = document.getElementById('file_' + hypId);
+        var lab = document.getElementById('fileLabel_' + hypId);
+        if (el && el.files && el.files[0] && lab) {
+            lab.textContent = 'Выбрано: ' + el.files[0].name;
+            lab.classList.remove('hidden');
+        }
+    }
+
+    // ==================== MODULE NAVIGATION ====================
+    function selectModule(index) {
+        state.currentModule = index;
+        const module = modulesData[index];
+        
+        // Update nav
+        document.querySelectorAll('.nav-step').forEach((btn, i) => {
+            btn.classList.remove('active');
+            if (i === index) btn.classList.add('active');
+            const modStatus = state.modules[modulesData[i].id].status;
+            if (modStatus === "completed") {
+                btn.classList.add('completed');
+                btn.innerHTML = btn.innerHTML.replace(/^[^\s]+/, '✅');
+            }
+        });
+
+        // Render module content
+        renderModule(module);
+    }
+
+    function renderModule(module) {
+        const content = document.getElementById('moduleContent');
+        const modState = state.modules[module.id];
+        
+        let html = `
+            <div class="fade-in">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-3xl">${module.icon}</span>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900">${module.title}</h2>
+                                <p class="text-sm text-gray-500">ТЗ раздел ${module.docSectionRef.match(/раздел \d/)?.[0] || ''} • Резюме разделы ${module.resumeSections.join(', ')}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 mt-2">
+                            <span class="text-xs px-2 py-1 rounded-full font-medium ${
+                                module.priority === 'critical' ? 'bg-red-100 text-red-700' :
+                                module.priority === 'high' ? 'bg-amber-100 text-amber-700' :
+                                'bg-blue-100 text-blue-700'
+                            }">${module.priority === 'critical' ? 'Критический фокус' : module.priority === 'high' ? 'Высокий приоритет' : 'Средний приоритет'}</span>
+                            <span class="text-xs text-gray-400">${modState.completedHypotheses.length}/${module.hypotheses.length} гипотез проработано</span>
+                        </div>
+                    </div>
+                    <button onclick="toggleModuleHint()" class="tooltip-box p-2 hover:bg-gray-100 rounded-lg">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div class="tooltip-content">В этом модуле вы формулируете гипотезы по ${module.title.toLowerCase()}. Выберите формат: текст, файл; для отдельных вопросов — таблица сравнения или матрица рисков.</div>
+                    </button>
+                </div>
+                <div class="space-y-4">`;
+
+        module.hypotheses.forEach((hyp, hIdx) => {
+            const isCompleted = modState.completedHypotheses.includes(hyp.id);
+            const response = state.hypotheses[hyp.id];
+            const eff = getEffectiveMode(hyp);
+            const isSpecialType = hyp.responseMode === 'comparison_table' || hyp.responseMode === 'risk_matrix';
+            const specialKey = hyp.responseMode === 'comparison_table' ? 'comparison_table' : 'risk_matrix';
+            const specialBtnLabel = hyp.responseMode === 'comparison_table' ? '📊 Таблица сравнения' : '📊 Матрица рисков';
+
+            let modeButtons = '<div class="flex flex-wrap gap-2">' +
+                `<button type="button" onclick="setResponseMode('${hyp.id}', 'text')" class="text-xs px-3 py-1.5 rounded-lg border ${eff === 'text' ? 'bg-blue-50 border-blue-300 text-blue-700' : 'border-gray-200 text-gray-500 hover:bg-gray-50'} transition">📝 Текст</button>` +
+                `<button type="button" onclick="setResponseMode('${hyp.id}', 'file')" class="text-xs px-3 py-1.5 rounded-lg border ${eff === 'file' ? 'bg-blue-50 border-blue-300 text-blue-700' : 'border-gray-200 text-gray-500 hover:bg-gray-50'} transition">📎 Файл</button>` +
+                (isSpecialType ? `<button type="button" onclick="setResponseMode('${hyp.id}', '${specialKey}')" class="text-xs px-3 py-1.5 rounded-lg border ${eff === specialKey ? 'bg-purple-50 border-purple-300 text-purple-700' : 'border-gray-200 text-gray-500 hover:bg-gray-50'} transition">${specialBtnLabel}</button>` : '') +
+                '</div>';
+
+            let middleArea = '';
+            if (eff === 'comparison_table') {
+                middleArea = renderComparisonTable(hyp);
+            } else if (eff === 'risk_matrix') {
+                middleArea = renderRiskMatrix(hyp);
+            } else if (eff === 'file') {
+                middleArea = `
+                    <div class="space-y-2">
+                        <input type="file" id="file_${hyp.id}" class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,image/*" onchange="onHypothesisFileChange('${hyp.id}')">
+                        <label for="file_${hyp.id}" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 transition cursor-pointer" style="--tw-hover-border-color:#4D966F" onmouseover="this.style.borderColor='#4D966F'" onmouseout="this.style.borderColor=''"  >
+                            <svg class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                            <p class="text-sm text-gray-500">Выберите файл на устройстве</p>
+                            <p class="text-xs text-gray-400 mt-1">PDF, DOCX, XLSX до 50MB</p>
+                            <p id="fileLabel_${hyp.id}" class="text-xs text-blue-600 mt-2 hidden"></p>
+                        </label>
+                    </div>`;
+            } else {
+                middleArea = `<textarea id="input_${hyp.id}" rows="4" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm resize-none" placeholder="Сформулируйте ответ..."></textarea>`;
+            }
+
+            const footerRow = `
+                <div class="flex flex-wrap items-center justify-between gap-3 mt-3">
+                    <select id="confidence_${hyp.id}" class="text-xs border border-gray-300 rounded-lg px-3 py-1.5 bg-white">
+                        <option value="unverified">Не проверено</option>
+                        <option value="low">Низкая уверенность</option>
+                        <option value="medium" selected>Средняя уверенность</option>
+                        <option value="high">Высокая уверенность</option>
+                    </select>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="skipHypothesis('${hyp.id}')" class="text-xs text-gray-400 hover:text-gray-600 px-3 py-1.5 transition">Пропустить</button>
+                        <button type="button" onclick="saveHypothesis('${hyp.id}', '${module.id}')" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium transition">Зафиксировать</button>
+                    </div>
+                </div>`;
+
+            html += `
+                <div class="hypothesis-card border border-gray-200 rounded-xl p-5 ${isCompleted ? 'bg-green-50 border-green-200' : ''}" id="hyp_${hyp.id}">
+                    <div class="flex items-start gap-3">
+                        <div class="flex-shrink-0 w-7 h-7 rounded-full ${isCompleted ? 'bg-green-500' : 'bg-gray-200'} flex items-center justify-center mt-0.5">
+                            ${isCompleted ? 
+                                '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>' : 
+                                `<span class="text-xs font-bold text-gray-500">${hIdx + 1}</span>`
+                            }
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-gray-900 font-medium mb-1">${hyp.prompt}</p>
+                            <div class="flex items-center gap-2 mb-3 flex-wrap">
+                                <span class="text-xs text-gray-400">Резюме: разд. ${hyp.linkedResume.join(', ')}</span>
+                                ${hyp.responseMode === 'comparison_table' ? '<span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded">Таблица сравнения</span>' : ''}
+                                ${hyp.responseMode === 'risk_matrix' ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">Матрица рисков</span>' : ''}
+                                ${hyp.responseMode === 'file' ? '<span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Загрузка файла</span>' : ''}
+                            </div>
+                            
+                            ${isCompleted && response ? `
+                                <div class="bg-white rounded-lg p-3 border border-gray-200 mb-3">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-xs font-semibold text-gray-500 uppercase">Ответ:</span>
+                                        <span class="text-xs text-gray-400">${response.confidence || 'medium'}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-700">${response.content}</p>
+                                </div>
+                            ` : ''}
+                            
+                            ${!isCompleted ? `
+                                <div class="space-y-3">
+                                    ${modeButtons}
+                                    <div id="responseArea_${hyp.id}">
+                                        ${middleArea}
+                                    </div>
+                                    ${footerRow}
+                                </div>
+                            ` : `
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="editHypothesis('${hyp.id}', '${module.id}')" class="text-xs text-blue-600 hover:text-blue-700 font-medium">✏️ Редактировать</button>
+                                    <span class="text-xs text-green-600 font-medium">✓ Зафиксировано</span>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>`;
+        });
+
+        // Empty state hint
+        html += `
+                </div>
+                <div class="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                    <p class="text-sm text-blue-800 flex items-start gap-2">
+                        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                        <span>Не нужно заполнять всё идеально. Фонды ценят честность о границах готовности больше, чем формальное соответствие. Опишите, как вы планируете проверить эту гипотезу.</span>
+                    </p>
+                </div>
+            </div>`;
+
+        content.innerHTML = html;
+    }
+
+    function renderComparisonTable(hyp) {
+        return `
+            <div class="overflow-x-auto mb-3">
+                <table class="w-full text-sm border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">Объект</th>
+                            <th class="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">Стадия</th>
+                            <th class="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">Параметр 1</th>
+                            <th class="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">Параметр 2</th>
+                            <th class="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">Параметр 3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border border-gray-200 px-3 py-2 font-medium bg-blue-50">Ваш проект</td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="Стадия..."></td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="Значение..."></td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="Значение..."></td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="Значение..."></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-200 px-3 py-2">Аналог 1</td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="..."></td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="..."></td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="..."></td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="..."></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-200 px-3 py-2">Аналог 2</td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="..."></td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="..."></td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="..."></td>
+                            <td class="border border-gray-200 px-3 py-2"><input class="w-full text-xs border-0 bg-transparent" placeholder="..."></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="text-xs text-gray-400 mt-2">Не заполняйте все ячейки. Выберите 2–3 параметра, которые действительно важны для клиента.</p>
+            </div>`;
+    }
+
+    function renderRiskMatrix(hyp) {
+        return `
+            <div class="space-y-3 mb-3" id="riskRows">
+                <div class="grid grid-cols-12 gap-2 text-xs font-semibold text-gray-500 mb-1">
+                    <div class="col-span-1">№</div>
+                    <div class="col-span-3">Наименование риска</div>
+                    <div class="col-span-2">Вероятность (1-10)</div>
+                    <div class="col-span-3">Способ устранения</div>
+                    <div class="col-span-3">Случаи реализации</div>
+                </div>
+                <div class="risk-row grid grid-cols-12 gap-2">
+                    <div class="col-span-1 flex items-center text-sm font-bold text-gray-400">1</div>
+                    <div class="col-span-3"><input class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="Название риска..."></div>
+                    <div class="col-span-2"><input type="number" min="1" max="10" class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="1-10"></div>
+                    <div class="col-span-3"><input class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="План снижения..."></div>
+                    <div class="col-span-3"><input class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="Кейс (если был)..."></div>
+                </div>
+                <div class="risk-row grid grid-cols-12 gap-2">
+                    <div class="col-span-1 flex items-center text-sm font-bold text-gray-400">2</div>
+                    <div class="col-span-3"><input class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="Название риска..."></div>
+                    <div class="col-span-2"><input type="number" min="1" max="10" class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="1-10"></div>
+                    <div class="col-span-3"><input class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="План снижения..."></div>
+                    <div class="col-span-3"><input class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="Кейс (если был)..."></div>
+                </div>
+                <div class="risk-row grid grid-cols-12 gap-2">
+                    <div class="col-span-1 flex items-center text-sm font-bold text-gray-400">3</div>
+                    <div class="col-span-3"><input class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="Название риска..."></div>
+                    <div class="col-span-2"><input type="number" min="1" max="10" class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="1-10"></div>
+                    <div class="col-span-3"><input class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="План снижения..."></div>
+                    <div class="col-span-3"><input class="w-full text-xs border border-gray-200 rounded px-2 py-1.5" placeholder="Кейс (если был)..."></div>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400">Вероятность от 1 до 10 — это ваша оценка. Главное — показать, что вы об этом думали.</p>`;
+    }
+
+    // ==================== HYPOTHESIS MANAGEMENT ====================
+    function setResponseMode(hypId, mode) {
+        currentResponseModes[hypId] = mode;
+        // Re-render current module to update UI
+        if (state.currentModule !== null) {
+            renderModule(modulesData[state.currentModule]);
+        }
+    }
+
+    function saveHypothesis(hypId, moduleId) {
+        const module = modulesData.find(m => m.id === moduleId);
+        const hyp = module.hypotheses.find(h => h.id === hypId);
+        const mode = getEffectiveMode(hyp);
+        const confidence = document.getElementById(`confidence_${hypId}`);
+        const input = document.getElementById(`input_${hypId}`);
+        const fileInput = document.getElementById(`file_${hypId}`);
+
+        let content = '';
+        if (mode === 'comparison_table' || mode === 'risk_matrix') {
+            content = 'Табличные данные заполнены (структура сохранена)';
+        } else if (mode === 'file') {
+            const f = fileInput && fileInput.files && fileInput.files[0];
+            content = f ? ('Файл: ' + f.name) : '';
+        } else if (input) {
+            content = input.value.trim();
+        }
+
+        if (mode === 'assumption' && !content) {
+            content = '(допущение — данные будут получены позже)';
+        }
+
+        if (!content && mode !== 'assumption') {
+            if (input) input.classList.add('border-red-400');
+            return;
+        }
+
+        if (input) input.classList.remove('border-red-400');
+
+        const assumption = mode === 'assumption';
+        
+        state.hypotheses[hypId] = {
+            content: content || '(допущение — данные будут получены позже)',
+            confidence: confidence?.value || 'medium',
+            mode: mode,
+            assumption: assumption,
+            timestamp: new Date().toISOString()
+        };
+
+        if (assumption && state.assumptions.indexOf(hypId) === -1) {
+            state.assumptions.push(hypId);
+        }
+
+        if (!state.modules[moduleId].completedHypotheses.includes(hypId)) {
+            state.modules[moduleId].completedHypotheses.push(hypId);
+        }
+
+        // Check if module is complete
+        if (state.modules[moduleId].completedHypotheses.length === module.hypotheses.length) {
+            state.modules[moduleId].status = 'completed';
+        } else {
+            state.modules[moduleId].status = 'exploring';
+        }
+
+        // Generate dependencies
+        const hypData = module.hypotheses.find(h => h.id === hypId);
+        if (hypData && hypData.dependencyTrigger) {
+            hypData.dependencyTrigger.forEach(depModule => {
+                addDependency(moduleId, depModule, hypId);
+            });
+        }
+
+        updateProgress();
+        updateDependencies();
+        updateHypothesesSummary();
+        renderModule(module);
+    }
+
+    function skipHypothesis(hypId) {
+        const confidence = document.getElementById(`confidence_${hypId}`);
+        state.hypotheses[hypId] = {
+            content: '(пропущено — будет проработано позже)',
+            confidence: confidence?.value || 'unverified',
+            mode: 'skipped',
+            timestamp: new Date().toISOString()
+        };
+
+        if (state.currentModule !== null) {
+            const module = modulesData[state.currentModule];
+            if (!state.modules[module.id].completedHypotheses.includes(hypId)) {
+                state.modules[module.id].completedHypotheses.push(hypId);
+            }
+            state.modules[module.id].status = 'exploring';
+            updateProgress();
+            renderModule(module);
+        }
+    }
+
+    function editHypothesis(hypId, moduleId) {
+        state.modules[moduleId].completedHypotheses = state.modules[moduleId].completedHypotheses.filter(id => id !== hypId);
+        delete currentResponseModes[hypId];
+        renderModule(modulesData.find(m => m.id === moduleId));
+    }
+
+    function simulateFileUpload(hypId) {
+        state.hypotheses[hypId] = {
+            content: 'Файл загружен (демо-режим)',
+            confidence: 'medium',
+            mode: 'file',
+            fileName: 'document.pdf',
+            timestamp: new Date().toISOString()
+        };
+
+        const module = modulesData[state.currentModule];
+        if (!state.modules[module.id].completedHypotheses.includes(hypId)) {
+            state.modules[module.id].completedHypotheses.push(hypId);
+        }
+        state.modules[module.id].status = 'exploring';
+        updateProgress();
+        updateHypothesesSummary();
+        renderModule(module);
+    }
+
+    // ==================== DEPENDENCIES ====================
+    function addDependency(fromModule, toModule, hypId) {
+        const exists = state.dependencies.find(d => d.from === fromModule && d.to === toModule);
+        if (!exists) {
+            state.dependencies.push({
+                from: fromModule,
+                to: toModule,
+                hypId: hypId,
+                type: 'linked'
+            });
+        }
+    }
+
+    function updateDependencies() {
+        const list = document.getElementById('dependenciesList');
+        if (!list) return;
+        if (state.dependencies.length === 0) {
+            list.innerHTML = '<div class="text-sm text-gray-400 italic">Связи появятся, когда вы начнёте заполнять модули</div>';
+            return;
+        }
+
+        const moduleNames = {
+            'product': 'Продукт',
+            'technology': 'Технология',
+            'readiness': 'Проработанность',
+            'resources': 'Ресурсы',
+            'stage': 'Стадия',
+            'risks': 'Риски'
+        };
+
+        let html = '';
+        state.dependencies.forEach(dep => {
+            html += `
+                <div class="flex items-center gap-2 text-sm p-2 bg-gray-50 rounded-lg">
+                    <span class="font-medium text-gray-700">${moduleNames[dep.from]}</span>
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    <span class="font-medium text-blue-600">${moduleNames[dep.to]}</span>
+                    <span class="tooltip-box ml-auto cursor-help">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div class="tooltip-content">Решение в модуле «${moduleNames[dep.from]}» влияет на «${moduleNames[dep.to]}». Рекомендуем проверить эту связь.</div>
+                    </span>
+                </div>`;
+        });
+        list.innerHTML = html;
+    }
+
+    function updateHypothesesSummary() {
+        const summary = document.getElementById('hypothesesSummary');
+        if (!summary) return;
+        const filled = Object.entries(state.hypotheses).filter(([_, v]) => v.content && !v.content.includes('пропущено'));
+        
+        if (filled.length === 0) {
+            summary.innerHTML = '<div class="text-sm text-gray-400 italic">Нет зафиксированных гипотез</div>';
+            return;
+        }
+
+        let html = '';
+        filled.slice(0, 5).forEach(([id, val]) => {
+            const hypData = Object.values(modulesData).flatMap(m => m.hypotheses).find(h => h.id === id);
+            const module = modulesData.find(m => m.hypotheses.some(h => h.id === id));
+            html += `
+                <div class="text-xs p-2 bg-gray-50 rounded-lg">
+                    <span class="text-gray-400">${module?.icon || ''} ${module?.title || ''}:</span>
+                    <span class="text-gray-700 line-clamp-2">${val.content.substring(0, 80)}${val.content.length > 80 ? '...' : ''}</span>
+                    ${val.assumption ? '<span class="risk-badge bg-amber-100 text-amber-700 ml-1">допущение</span>' : ''}
+                </div>`;
+        });
+        if (filled.length > 5) {
+            html += `<div class="text-xs text-gray-400 text-center">+ ещё ${filled.length - 5}</div>`;
+        }
+        summary.innerHTML = html;
+    }
+
+    // ==================== PROGRESS ====================
+    function updateProgress() {
+        const totalHyps = modulesData.reduce((sum, m) => sum + m.hypotheses.length, 0);
+        const completedHyps = Object.values(state.modules).reduce((sum, m) => sum + m.completedHypotheses.length, 0);
+        const percent = Math.round((completedHyps / totalHyps) * 100);
+
+        // Update circle
+        const circle = document.getElementById('progressCircle');
+        const circumference = 2 * Math.PI * 15.9155;
+        const offset = circumference - (percent / 100) * circumference;
+        circle.style.strokeDasharray = `${circumference}`;
+        circle.style.strokeDashoffset = `${offset}`;
+        
+        document.getElementById('progressPercent').textContent = `${percent}%`;
+        document.getElementById('progressText').textContent = 
+            percent === 0 ? 'Выберите модуль и начните формулировать гипотезы' :
+            percent < 30 ? 'Начальный этап. Продолжайте формулировать аргументы.' :
+            percent < 60 ? 'Хороший прогресс. Проверьте связи между модулями.' :
+            percent < 90 ? 'Отлично! Откройте «Предпросмотр для фонда» для финализации.' :
+            'Материалы готовы к отправке. Проверьте финальный отчёт.';
+    }
+
+    function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    // ==================== COMMITTEE VIEW ====================
+    function showCommitteeView() {
+        const modal = document.getElementById('committeeModal');
+        const content = document.getElementById('committeeContent');
+        
+        const moduleNames = {
+            'product': 'Продукт',
+            'technology': 'Технологическая схема',
+            'readiness': 'Технологическая проработанность',
+            'resources': 'Ресурсы процесса',
+            'stage': 'Стадия реализации',
+            'risks': 'Выводы и риски'
+        };
+
+        let html = '';
+        modulesData.forEach(module => {
+            const modState = state.modules[module.id];
+            const completedHyps = modState.completedHypotheses.map(id => state.hypotheses[id]).filter(Boolean);
+            const skippedHyps = completedHyps.filter(h => h.mode === 'skipped' || h.content.includes('пропущено'));
+            const validHyps = completedHyps.filter(h => h.mode !== 'skipped' && !h.content.includes('пропущено'));
+            
+            let status = 'Не начато';
+            let statusColor = 'bg-gray-100 text-gray-600';
+            if (validHyps.length > 0 && skippedHyps.length === 0) {
+                status = 'Аргументировано';
+                statusColor = 'bg-green-100 text-green-700';
+            } else if (validHyps.length > 0) {
+                status = 'Требует уточнения';
+                statusColor = 'bg-amber-100 text-amber-700';
+            } else if (modState.status !== 'draft') {
+                status = 'Черновик';
+                statusColor = 'bg-blue-100 text-blue-700';
+            }
+
+            html += `
+                <div class="preview-section border border-gray-200 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-bold text-gray-900 flex items-center gap-2">
+                            ${module.icon} ${module.title}
+                        </h3>
+                        <span class="text-xs px-3 py-1 rounded-full font-medium ${statusColor}">${status}</span>
+                    </div>
+                    <div class="space-y-2">`;
+
+            module.hypotheses.forEach(hyp => {
+                const response = state.hypotheses[hyp.id];
+                if (response && response.content) {
+                    const promptText = escapeHtml(hyp.prompt);
+                    const bodyText = escapeHtml(response.content);
+                    html += `
+                        <div class="flex items-start gap-2 text-sm">
+                            <span class="text-gray-400 mt-0.5">${response.assumption ? '⚡' : '✓'}</span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-gray-600 text-xs mb-1 whitespace-pre-wrap break-words">${promptText}</p>
+                                <p class="text-gray-900 whitespace-pre-wrap break-words ${response.assumption ? 'italic text-amber-700' : ''}">${bodyText}</p>
+                            </div>
+                            <span class="text-xs text-gray-400 flex-shrink-0">${escapeHtml(response.confidence || '')}</span>
+                        </div>`;
+                }
+            });
+
+            if (completedHyps.length === 0) {
+                html += '<p class="text-sm text-gray-400 italic">Нет данных</p>';
+            }
+
+            html += `
+                    </div>
+                </div>`;
+        });
+
+        // Assumptions section
+        if (state.assumptions.length > 0) {
+            html += `
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                    <h3 class="font-bold text-amber-900 mb-3 flex items-center gap-2">
+                        ⚡ Зафиксированные допущения (${state.assumptions.length})
+                    </h3>
+                    <div class="space-y-2">`;
+            state.assumptions.forEach(id => {
+                const hyp = state.hypotheses[id];
+                if (hyp) {
+                    html += `<p class="text-sm text-amber-800 whitespace-pre-wrap break-words">• ${escapeHtml(hyp.content)}</p>`;
+                }
+            });
+            html += `</div></div>`;
+        }
+
+        // Recommendations
+        const unstarted = modulesData.filter(m => state.modules[m.id].status === 'draft');
+        if (unstarted.length > 0) {
+            html += `
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                    <h3 class="font-bold text-blue-900 mb-3">📋 Рекомендации комитета</h3>
+                    <ul class="space-y-2">`;
+            unstarted.forEach(m => {
+                html += `<li class="text-sm text-blue-800 flex items-start gap-2"><span>→</span> Модуль «${m.title}» не начат. Рекомендуем проработать хотя бы ключевые гипотезы.</li>`;
+            });
+            html += `</ul></div>`;
+        }
+
+        content.innerHTML = html;
+        modal.classList.remove('hidden');
+    }
+
+    function closeCommitteeModal() {
+        document.getElementById('committeeModal').classList.add('hidden');
+    }
+
+    // ==================== EXPORT ====================
+    function exportResume() {
+        // Generate a summary of all data
+        let resumeText = "РЕЗЮМЕ ПРОЕКТА\n";
+        resumeText += "================\n\n";
+        resumeText += `Сгенерировано: ${new Date().toLocaleString('ru-RU')}\n`;
+        resumeText += `Отрасль: ${state.industry || 'не указана'}\n`;
+        resumeText += `Стадия: ${state.stage || 'не указана'}\n`;
+        resumeText += `Площадка: ${state.site || 'не указана'}\n\n`;
+
+        modulesData.forEach(module => {
+            resumeText += `\n--- ${module.icon} ${module.title} (Резюме разделы: ${module.resumeSections.join(', ')}) ---\n`;
+            module.hypotheses.forEach(hyp => {
+                const response = state.hypotheses[hyp.id];
+                if (response && response.content && !response.content.includes('пропущено')) {
+                    resumeText += `\n[${response.assumption ? 'ДОПУЩЕНИЕ' : 'ПРОВЕРЕНО'}] ${hyp.prompt}\n`;
+                    resumeText += `Ответ: ${response.content}\n`;
+                    resumeText += `Уверенность: ${response.confidence}\n`;
+                }
+            });
+        });
+
+        // Create and download
+        const blob = new Blob([resumeText], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Resume_Project_${new Date().toISOString().split('T')[0]}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // ==================== HELP ====================
+    function showHelp() {
+        document.getElementById('helpModal').classList.remove('hidden');
+    }
+
+    function closeHelp() {
+        document.getElementById('helpModal').classList.add('hidden');
+    }
+
+    // ==================== RESET ====================
+    function resetPolygon() {
+        if (!confirm('Вы уверены? Все данные будут удалены.')) return;
+        
+        state.modules = {};
+        state.dependencies = [];
+        state.assumptions = [];
+        state.hypotheses = {};
+        state.currentModule = null;
+        
+        modulesData.forEach(m => {
+            state.modules[m.id] = {
+                status: "draft",
+                completedHypotheses: [],
+                assumptions: []
+            };
+        });
+
+        updateProgress();
+        updateDependencies();
+        updateHypothesesSummary();
+        
+        document.getElementById('moduleContent').innerHTML = document.getElementById('modulePlaceholder').outerHTML;
+        
+        // Reset nav
+        document.querySelectorAll('.nav-step').forEach(btn => {
+            btn.classList.remove('active', 'completed');
+        });
+
+        document.getElementById('modulePlaceholder').style.display = '';
+    }
+
+    function toggleModuleHint() {
+        // Placeholder for additional hint toggle
+    }
+
+    // ==================== MOCK DATA ====================
+    function loadMockData() {
+        const ts = new Date().toISOString();
+        const mockHypotheses = {
+            // Продукт: h1_1 и h1_3 заполнены, h1_2 (таблица сравнения) — пусто
+            h1_1: { content: 'Клиники получают объяснимый AI-отчёт по геномным данным с точностью алгоритма 94% (валидация на когорте Бурденко). Врач экономит 3–5 рабочих дней на интерпретацию — вместо ручной разметки готовый структурированный отчёт поступает в ЛИС. Подтверждено актами валидации и LoI с одной сетью клиник.', confidence: 'high', mode: 'text', timestamp: ts },
+            h1_3: { content: 'Провели интервью с 12 врачами в 4 клиниках Москвы, нашли подтверждение в обзорах рынка геномики РФ ($2.3 млрд, рост 15%/год до 2030). Спрос валидировали через NDA с двумя лабораториями и LoI с сетью клиник.', confidence: 'medium', mode: 'text', timestamp: ts },
+
+            // Технология: h2_1 и h2_2 заполнены, h2_3 (разрешения) — пусто
+            h2_1: { content: 'Образец → секвенирование у подрядчика (Illumina HiSeq) → наше облако (AWS ru-central) → AI-модель → объяснимый отчёт в формате ЛИС/МИС. Полный цикл: 24–72 ч от поступления образца.', confidence: 'high', mode: 'text', timestamp: ts },
+            h2_2: { content: 'Требует стабильного интернет-соединения (облачная обработка). Зависимость от партнёров-секвенаторов — один уже на NDA. Хранение геномных данных регулируется ФЗ-152, используем серверы в РФ. BSL-2 не требуется — работаем с цифровыми данными.', confidence: 'medium', mode: 'text', timestamp: ts },
+
+            // Проработанность: h3_1 и h3_3 заполнены, h3_2 (файл испытаний) — пусто
+            h3_1: { content: 'Готово: техническая документация на AI-пайплайн, акты валидации с клиникой Бурденко, API-спецификация для интеграции с МИС. В работе: документация по регуляторному треку ПО класса 2а, интеграционные адаптеры для двух МИС-платформ.', confidence: 'medium', mode: 'text', timestamp: ts },
+            h3_3: { content: 'Подана заявка на изобретение по алгоритму в Роспатент, рассматривается PCT. Данные обучения и пайплайн — режим ноу-хау, все сотрудники под NDA. Риск: товарный знак пока на физлице соучредителя — планируем переоформление на ООО до закрытия раунда.', confidence: 'medium', mode: 'text', timestamp: ts },
+
+            // Ресурсы: h4_1, h4_3, h4_4 заполнены, h4_2 (сырьё) — пусто
+            h4_1: { content: 'Секвенирование — внешний подрядчик (Illumina HiSeq). Облачная обработка — AWS ru-central, GPU A10, масштабирование через Kubernetes. Текущей мощности достаточно для 500 образцов/мес. Дальше — горизонтальное масштабирование.', confidence: 'high', mode: 'text', timestamp: ts },
+            h4_3: { content: '1) AI/ML и биоинформатика — CTO (PhD, 8 лет, ex-Яндекс). 2) Клиническая валидация — Медицинский директор (практикующий врач, 15 лет, онкогематология). 3) B2B-продажи — CEO (ex-Яндекс.Здоровье, закрыл 3 контракта от $50K+). В поиске: DevOps-инженер, регуляторный консультант по ФЗ-323.', confidence: 'high', mode: 'text', timestamp: ts },
+            h4_4: { content: 'Работаем с цифровыми данными — требования Росприроднадзора не применяются. При масштабировании до собственной лаборатории BSL-2 потребуются разрешения Роспотребнадзора. Соответствие ФЗ-152 — аудит запланирован на Q2 2026.', confidence: 'medium', mode: 'text', timestamp: ts },
+
+            // Стадия: h5_1, h5_3, h5_4 заполнены, h5_2 (площадка) — пусто
+            h5_1: { content: 'Сделано: НИОКР завершён (Q4 2025), валидация на когорте Бурденко (акты есть), MVP развёрнут. Впереди: 2 клинических пилота (Q3–Q4 2026), интеграция с МИС, регуляторный статус ПО класса 2а (Q2 2027). Программа: 50 → 500 образцов/мес за 18 мес.', confidence: 'medium', mode: 'text', timestamp: ts },
+            h5_3: { content: 'Запрашиваем $2M: R&D и команда 45% ($900K), клинические пилоты и регуляторика 30% ($600K), выход в ЕС (CE-mark) 15% ($300K), маркетинг и продажи 10% ($200K). Прогноз выручки 2026: $120K. Уже привлечено $500K от бизнес-ангелов.', confidence: 'medium', mode: 'text', timestamp: ts },
+            h5_4: { content: 'ООО в РФ, 3 соучредителя с равными долями. Опционный пул 10% (ESOP) — принципиально договорились, оформляется с юристами. Иностранных юрлиц нет. Корпоративные договоры в работе.', confidence: 'medium', mode: 'text', timestamp: ts },
+
+            // Риски: h6_1 (матрица) и h6_2 заполнены, h6_3 (допущения) — пусто
+            h6_1: { content: 'Риск 1: ИС и товарный знак на физлице — вероятность 7, план: переоформление до раунда.\nРиск 2: Регуляторный трек ПО класса 2а затянется — вероятность 5, план: параллельно с пилотами.\nРиск 3: Зависимость от партнёров-секвенаторов — вероятность 4, план: 2+ контракта, NDA уже есть.', confidence: 'medium', mode: 'risk_matrix', timestamp: ts },
+            h6_2: { content: 'Объект коммерциализации — гибрид SaaS-лицензии и платы за анализ. Устойчивость: 1) Повторная выручка через подписку (LTV >> CAC в B2B-клиниках). 2) Высокий барьер входа — 2 года НИОКР + клинические данные. 3) Lock-in через интеграцию с МИС клиента.', confidence: 'high', mode: 'text', timestamp: ts }
+        };
+
+        Object.assign(state.hypotheses, mockHypotheses);
+
+        const moduleHypMap = {
+            product:    ['h1_1', 'h1_3'],
+            technology: ['h2_1', 'h2_2'],
+            readiness:  ['h3_1', 'h3_3'],
+            resources:  ['h4_1', 'h4_3', 'h4_4'],
+            stage:      ['h5_1', 'h5_3', 'h5_4'],
+            risks:      ['h6_1', 'h6_2']
+        };
+
+        Object.entries(moduleHypMap).forEach(([moduleId, hypIds]) => {
+            state.modules[moduleId].completedHypotheses = hypIds;
+            const module = modulesData.find(m => m.id === moduleId);
+            state.modules[moduleId].status = (module && hypIds.length === module.hypotheses.length) ? 'completed' : 'exploring';
+        });
+    }
+
+    // ==================== SUBMIT TO FUND ====================
+    function submitToFund() {
+        const totalHyps = modulesData.reduce((sum, m) => sum + m.hypotheses.length, 0);
+        const completedHyps = Object.values(state.modules).reduce((sum, m) => sum + m.completedHypotheses.length, 0);
+        const percent = Math.round((completedHyps / totalHyps) * 100);
+
+        if (percent < 30) {
+            alert('Заполните хотя бы 30% экспертизы перед отправкой.\nСейчас заполнено: ' + percent + '%');
+            return;
+        }
+
+        const confirmed = confirm(
+            'Готовы отправить заявку в фонд?\n\n' +
+            'Заполнено экспертизы: ' + percent + '%\n\n' +
+            'После отправки аналитик фонда получит уведомление и свяжется с вами в течение 2 рабочих дней.'
+        );
+
+        if (!confirmed) return;
+
+        const btn = document.getElementById('submitToFundBtn');
+        if (btn) {
+            btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Заявка отправлена';
+            btn.style.background = 'linear-gradient(to right, #6b7280, #9ca3af)';
+            btn.classList.remove('from-green-500', 'to-emerald-600', 'hover:from-green-600', 'hover:to-emerald-700');
+            btn.disabled = true;
+            btn.style.cursor = 'not-allowed';
+            btn.style.opacity = '0.85';
+        }
+    }
+
+    // ==================== INIT ====================
+    function applyQueryCalibration() {
+        var p = new URLSearchParams(location.search);
+        var ind = p.get('industry');
+        var st = p.get('stage');
+        var site = p.get('site');
+        var selInd = document.getElementById('industrySelect');
+        var selSt = document.getElementById('stageSelect');
+        var selSite = document.getElementById('siteSelect');
+        if (ind && selInd) selInd.value = ind;
+        if (st && selSt) selSt.value = st;
+        if (site && selSite) selSite.value = site;
+        if (p.get('autoStart') === '1') {
+            setTimeout(function () { startCalibration(); }, 0);
+        }
+    }
+    applyQueryCalibration();
+    updateProgress();
+    </script>
+</body>
+</html>
+
+
