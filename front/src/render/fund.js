@@ -534,7 +534,7 @@ function renderCheckCompanyTab() {
 
         <!-- Анализ рынка -->
         <div id="market-area-wrap">
-          ${state.moduleLoading?.market
+          ${state.moduleLoading?.market && !marketState.loading
             ? `<div class="bg-card rounded-2xl shadow-soft p-6">${moduleHeader('Анализ рынка и конкурентов', { loading: true })}</div>`
             : renderMarketSummaryHTML(marketState.summary, {
                 companyName: selected?.company?.name || selected?.company?.full_name || selected?.name,

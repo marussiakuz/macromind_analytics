@@ -80,6 +80,14 @@ async def _fake_discovery(summary, workspace_id=None, fetch_externals=True):
 
 @pytest.fixture
 def patch_stack(monkeypatch):
+    from types import SimpleNamespace
+    class Client:
+        settings = SimpleNamespace()
+        async def complete(self, *args, **kwargs):
+            return SimpleNamespace(ok=False, text='', error='test: no direction evidence',
+                                   error_code='bad_response', prompt_tokens=0, completion_tokens=0)
+        async def aclose(self): pass
+    monkeypatch.setattr('osint_agent.market.providers.factory.get_llm_client', lambda: Client())
     monkeypatch.setattr(
         "osint_agent.market.evidence.collect_market_evidence",
         lambda company, llm_unused=None, budget=None: _fake_collect_ok(),
@@ -353,3 +361,24 @@ async def test_pipeline_does_not_precharge_stage_b_budget(patch_stack, monkeypat
                              'buyer': 'предприятия'},
         site_text='Производство полимеров для предприятий.', repo=FakeRepo())
     assert observed and observed[0][1] > 0
+
+
+@pytest.mark.asyncio
+async def test_single_supported_direction_reuses_profile_and_records_stages(patch_stack, monkeypatch):
+    async def profile(*args, **kwargs):
+        return {'directions_site_trusted': True, 'directions': [{
+            'product_category_ru': 'Датчики давления', 'product_category_en': 'Pressure sensors',
+            'status': 'supported', 'description': 'Компания выпускает датчики давления.',
+            'buyer_segments': ['Промышленность'], 'evidence_ids': ['e1'],
+            'evidence': [{'quote': 'Компания выпускает датчики давления.'}],
+        }]}
+    async def must_not_repeat(*args, **kwargs):
+        raise AssertionError('Confirmed single-direction profile must not be generated twice')
+    monkeypatch.setattr('osint_agent.market.universal_analysis.research_company_profile', profile)
+    monkeypatch.setattr('osint_agent.market.analytical_report.infer_product_profile', must_not_repeat)
+    stages = []
+    out = await run_company_market_check(inn='test', company={'name': 'Тест'},
+                                        use_external_evidence=False, progress_callback=stages.append)
+    assert out['product_scope']['product'] == 'Датчики давления'
+    assert stages[0] == 'model_readiness' and stages[-1] == 'saving'
+    assert out['stage_timings'] and 'model_calls' in out

@@ -18,7 +18,7 @@ import {
   loadSavedAnalysis,
 } from '../api/market.js';
 import { marketState, resetMarketState } from './state.js';
-import { hasEvidenceReport } from './report-shape.js';
+import { hasEvidenceReport, hasFailedResearch } from './report-shape.js';
 import { knowledgeSearch } from '../api/knowledge.js';
 
 const API_BASE = 'http://localhost:8000';
@@ -503,6 +503,18 @@ export async function runAutoMarketAnalysis({ company, finances, registries, req
   autoAnalysisToken = token;
   const inn = company?.inn;
   const ctx = companySourceContext(company);
+  const requestKey = `auto-${inn || 'anon'}-${globalThis.crypto.randomUUID()}`;
+  let progressTimer = null;
+  let polling = false;
+  const phaseLabels = {
+    model_readiness: 'Проверяем доступность модели…',
+    company_sources: 'Ищем и читаем источники о компании…',
+    company_profile: 'Проверяем сайт и определяем направления бизнеса…',
+    market_sources: 'Собираем материалы о рынке и технологиях…',
+    competitor_research: 'Ищем и проверяем кандидатов в конкуренты…',
+    report_and_audit: 'Готовим отчёт и проверяем выводы по источникам…',
+    saving: 'Сохраняем отчёт…',
+  };
   try {
     marketState.loading = true;
     marketState.error = null;
@@ -515,7 +527,9 @@ export async function runAutoMarketAnalysis({ company, finances, registries, req
         const staleSources = states.length > 0 && states.every(
           s => s.status === 'not_configured' || s.status === 'error',
         );
-        if (hasEvidenceReport(saved) && !staleSources && autoAnalysisToken === token) {
+        if (hasEvidenceReport(saved) && !staleSources
+            && !hasFailedResearch(saved)
+            && autoAnalysisToken === token) {
           marketState.summary = saved;
           marketState.studyId = saved.study_id || marketState.studyId;
           marketState.topDown = saved.estimates_rf || null;
@@ -525,6 +539,21 @@ export async function runAutoMarketAnalysis({ company, finances, registries, req
         /* нет сохранённой версии */
       }
     }
+    marketState.progress = 'Проверяем доступность модели…';
+    progressTimer = setInterval(async () => {
+      if (polling || autoAnalysisToken !== token) return;
+      polling = true;
+      try {
+        const response = await fetch(`${API_BASE}/api/v1/market/auto-analysis/progress?request_key=${encodeURIComponent(requestKey)}`, { signal: AbortSignal.timeout(4000) });
+        if (!response.ok) return;
+        const progress = await response.json();
+        if (autoAnalysisToken !== token) return;
+        marketState.progress = phaseLabels[progress.step] || 'Выполняем исследование…';
+        const node = document.getElementById('market-progress');
+        if (node) node.textContent = marketState.progress;
+      } catch { /* A failed progress request must not cancel research. */ }
+      finally { polling = false; }
+    }, 2000);
     const summary = await fetchAutoAnalysis({
       company: {
         ...(company || {}),
@@ -536,7 +565,7 @@ export async function runAutoMarketAnalysis({ company, finances, registries, req
       registries: registries || {},
       site_text: siteText || ctx.siteText || company?.site_text || company?.description || null,
       extra_sources: ctx.urls.length ? ctx.urls : null,
-      request_key: `auto-${inn || 'anon'}-${token}`,
+      request_key: requestKey,
       use_external_evidence: true,
       use_discovery: true,
       use_llm: true,
@@ -551,7 +580,11 @@ export async function runAutoMarketAnalysis({ company, finances, registries, req
     marketState.error = e.message || 'Не удалось построить анализ рынка.';
     return null;
   } finally {
-    if (autoAnalysisToken === token) marketState.loading = false;
+    if (progressTimer !== null) clearInterval(progressTimer);
+    if (autoAnalysisToken === token) {
+      marketState.loading = false;
+      marketState.progress = null;
+    }
   }
 }
 

@@ -7,6 +7,7 @@ export const marketState = {
   studyId: null,
   study: null,
   loading: false,
+  progress: null,
   error: null,
   /** последние расчёты */
   topDown: null,
@@ -41,6 +42,7 @@ export function resetMarketState() {
   marketState.studyId = null;
   marketState.study = null;
   marketState.loading = false;
+  marketState.progress = null;
   marketState.error = null;
   marketState.topDown = null;
   marketState.bottomUp = null;

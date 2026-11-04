@@ -1025,7 +1025,8 @@ async def infer_company_directions(
         "Для brands указывай relation: own_brand | supplier | resale | unknown.\n"
         "status: supported (есть прямые цитаты) | hypothesis (косвенно) | unresolved (неясно).\n"
         "buyer_segments и geography заполняй только при основаниях в тексте, иначе пусто/unknown.\n"
-        "Не используй ОКВЭД и общие отраслевые слова без конкретики страниц.\n"
+        "ОКВЭД — контекст реестра, а не доказательство продукта. Сверяй ИНН, название и деятельность. "
+        "Чужие компании исключай. При противоречии не подтверждай направление.\n"
         "В evidence_ids — только id фрагментов (P1, P2, …) из sources. Цитаты добавит сервер.\n"
         "Если направлений несколько — перечисли все. Не выбирай «главное» по порядку меню."
     )
@@ -1036,6 +1037,7 @@ async def infer_company_directions(
                 "name": company.get("name") or company.get("full_name"),
                 "inn": company.get("inn"),
                 "okved": company.get("okved") or company.get("okved_main"),
+                "okved_description": company.get("okved_description"),
             },
             "sources": [
                 {k: p[k] for k in ("id", "title", "text", "read_level", "url")}
@@ -1130,6 +1132,20 @@ async def infer_company_directions(
     }
 
 
+def snippet_matches_company(company: dict[str, Any], url: str, text: str) -> bool:
+    """Search rank alone does not establish company identity."""
+    inn = str(company.get("inn") or "").strip()
+    if inn and re.search(r"(?<!\d)" + re.escape(inn) + r"(?!\d)", text):
+        return True
+    own_hosts = {_host(u) for u in company_site_candidates(company) if _host(u)}
+    if _host(url) and _host(url) in own_hosts:
+        return True
+    name = str(company.get("name") or company.get("full_name") or "")
+    name = re.sub(r"[^a-zа-яё0-9]", "", _NAME_SUFFIX_RE.sub(" ", name.lower()))
+    blob = re.sub(r"[^a-zа-яё0-9]", "", text.lower())
+    return len(name) >= 4 and name in blob
+
+
 async def discover_site_hints(
     company: dict[str, Any],
     *,
@@ -1173,7 +1189,7 @@ async def discover_site_hints(
                     continue
                 cat = categorize_link(url, f"{title} {passage}")
                 hits.append((url, cat if cat != "other" else "discovery"))
-                if passage and len(passage) > 80:
+                if passage and len(passage) > 80 and snippet_matches_company(company, url, f"{title} {passage}"):
                     snippets.append({
                         "url": url, "title": title, "text": passage[:PAGE_TEXT_LIMIT],
                         "kind": "html", "link_category": cat, "fetch_status": "search_snippet",

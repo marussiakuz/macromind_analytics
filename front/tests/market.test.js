@@ -272,3 +272,39 @@ test('restore path: saved directions render without new model call', () => {
   // no forced refresh button when a full evidence report is present
   assert.doesNotMatch(html, /Сохранён старый формат/);
 });
+
+test('empty current-format report shows failure reason rather than legacy warning', () => {
+  const saved = {
+    auto: true,
+    research_schema_version: 'market-evidence-5',
+    limitations: ['Нет связи с локальной моделью'],
+    analytical_report: { sections: {}, sources: [], company: {}, competitors: {} },
+  };
+  const html = renderMarketSummaryHTML(saved);
+  assert.doesNotMatch(html, /Сохранён старый формат/);
+  assert.match(html, /Нет связи с локальной моделью/);
+  assert.match(html, /Обновить исследование/);
+});
+
+test('failed saved research can retry, but honest data gaps remain reusable', async () => {
+  const { hasFailedResearch } = await import('../src/market/report-shape.js');
+  assert.equal(hasFailedResearch({ limitations: ['Нет связи с локальной моделью'] }), true);
+  assert.equal(hasFailedResearch({ limitations: ['Продукт требует уточнения'] }), false);
+  assert.equal(hasFailedResearch({ errors: [{ error: 'timeout' }] }), true);
+});
+
+test('loading market report shows actual stage and escapes its text', async () => {
+  const { marketState } = await import('../src/market/state.js');
+  const oldLoading = marketState.loading;
+  const oldProgress = marketState.progress;
+  try {
+    marketState.loading = true;
+    marketState.progress = 'Проверяем источники <тест>';
+    const html = renderMarketSummaryHTML(null);
+    assert.match(html, /id="market-progress"/);
+    assert.match(html, /Проверяем источники &lt;тест&gt;/);
+  } finally {
+    marketState.loading = oldLoading;
+    marketState.progress = oldProgress;
+  }
+});

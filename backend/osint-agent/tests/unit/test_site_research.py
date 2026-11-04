@@ -209,3 +209,12 @@ def test_product_pages_preserve_read_content_for_downstream_analysis():
     assert rows[0]['url']=='https://company.example/product'
     assert rows[0]['read_level']=='page_excerpt'
     assert rows[0]['full_text_read'] is False
+
+
+def test_unrelated_search_snippet_cannot_define_company_business():
+    from osint_agent.market.site_research import snippet_matches_company
+    company = {'inn': '7725438098', 'name': 'ООО "КОУЛМЭН ГРУП"', 'website': 'https://coleman.ru'}
+    assert not snippet_matches_company(company, 'https://games.example', 'Дистрибуция Lineage 2 и Black Desert')
+    assert snippet_matches_company(company, 'https://www.coleman.ru/services', 'Кадровые услуги')
+    assert snippet_matches_company(company, 'https://news.example', 'ООО Коулмэн Груп подбирает персонал')
+    assert snippet_matches_company(company, 'https://registry.example', 'ИНН 7725438098 кадровые услуги')

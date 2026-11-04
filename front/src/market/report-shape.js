@@ -1,7 +1,9 @@
 /** Recognize the supported report structure independently of its storage version. */
 export function hasEvidenceReport(summary) {
   const report = summary?.analytical_report;
-  if (!report || !Array.isArray(report.sources) || !report.sections) return false;
+  if (!report || !Array.isArray(report.sources) || !report.sections
+      || typeof report.sections !== 'object' || Array.isArray(report.sections)) return false;
+  if (Object.keys(report.sections).length === 0 && (summary.research_schema_version || report._meta?.schema_version)) return true;
   return ['world', 'russia', 'trends', 'market_risks', 'technology_risks']
     .some(key => Array.isArray(report.sections[key]));
 }
@@ -32,3 +34,11 @@ export function getDirections(summary) {
     || [];
 }
 
+
+/** Empty reports caused by a service failure must not freeze the saved result. */
+export function hasFailedResearch(summary) {
+  const sections = summary?.analytical_report?.sections || {};
+  if (Object.values(sections).some(rows => Array.isArray(rows) && rows.length)) return false;
+  return (summary?.errors || []).length > 0
+    || (summary?.limitations || []).some(text => /нет связи|не ответила вовремя|не ответил вовремя|HTTP (?:4|5)\d\d/i.test(String(text)));
+}

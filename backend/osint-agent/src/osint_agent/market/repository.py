@@ -385,6 +385,12 @@ class MarketRepository:
         conn.commit()
         return {"id": job_id, "status": "running", "kind": kind}
 
+    def update_job_step(self, job_id: str, step: str) -> None:
+        conn = self.connect()
+        conn.execute("UPDATE research_jobs SET step=?, updated_at=? WHERE id=? AND status='running'",
+                     (step, _now(), job_id))
+        conn.commit()
+
     def finish_job(self, job_id: str, *, status: str, result_version_id: str | None = None, error: str | None = None) -> None:
         conn = self.connect()
         conn.execute(

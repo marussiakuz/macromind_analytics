@@ -301,7 +301,7 @@ export function renderAnalyticalReportHTML(report) {
  * Ставится сразу после finances-area, перед timeline-area.
  */
 export function renderMarketSummaryHTML(summary, { companyName, inn } = {}) {
-  if (marketState.loading) return '<div id="market-area" class="bg-card rounded-2xl p-6"><h2 class="text-lg font-semibold">Анализ рынка и конкурентов</h2><p class="text-sm text-text-secondary mt-2">Ищем открытые источники, читаем документы и проверяем выводы модели…</p></div>';
+  if (marketState.loading) return `<div id="market-area" class="bg-card rounded-2xl p-6"><h2 class="text-lg font-semibold">Анализ рынка и конкурентов</h2><p id="market-progress" class="text-sm text-text-secondary mt-2">${escapeHtml(marketState.progress || 'Проверяем доступность модели…')}</p></div>`;
   if (marketState.error) return `<div id="market-area" class="bg-card rounded-2xl p-6"><h2 class="text-lg font-semibold">Анализ рынка и конкурентов</h2><p class="text-sm mt-2">${escapeHtml(marketState.error)}</p><button id="market-refresh-analysis" class="mt-3 px-3 py-2 bg-primary rounded-xl">Повторить исследование</button></div>`;
   if (!summary) return '';
 
@@ -316,10 +316,10 @@ export function renderMarketSummaryHTML(summary, { companyName, inn } = {}) {
     return `<div class="bg-card text-text-main rounded-2xl shadow-soft overflow-hidden slide-up" id="market-area">
       <div class="p-6 border-b border-card-border flex flex-wrap justify-between gap-3">
         <div><h2 class="text-lg font-semibold">Анализ рынка и конкурентов</h2><p class="text-sm text-text-secondary mt-1">${escapeHtml(companyName || report.company?.name || '')} · ${escapeHtml(inn || report.company?.inn || '')}</p><p class="text-xs text-text-secondary">Источников: ${count} · ${escapeHtml(summary.as_of || '')}</p></div>
-        <div class="flex items-center gap-2"><span class="text-xs text-text-secondary">${hasContent ? 'Обзор подготовлен · проверьте источники' : 'Требуются дополнительные сведения'}</span>
+        <div class="flex items-center gap-2"><span class="text-xs text-text-secondary">${hasContent ? 'Обзор подготовлен · проверьте источники' : 'Исследование не завершено'}</span>
         <button id="market-refresh-analysis" class="px-3 py-2 bg-primary text-white rounded-xl text-sm">Обновить исследование</button>
         <button id="market-download-report" class="px-3 py-2 border border-card-border rounded-xl text-sm">Скачать отчёт</button></div>
-      </div><div class="p-6 space-y-4">${renderAnalyticalReportHTML(report)}
+      </div><div class="p-6 space-y-4">${!hasContent ? `<p class="text-sm text-text-secondary">${escapeHtml((summary.limitations || []).join(' ') || 'Не удалось получить подтверждённые выводы. Обновите исследование.')}</p>` : ''}${renderAnalyticalReportHTML(report)}
       <details class="text-xs text-text-secondary"><summary>Состояние источников</summary>${(summary.external_source_states || []).map(s => `<div>${escapeHtml(s.source)}: ${escapeHtml(s.status)} · ${escapeHtml(s.message || '')}</div>`).join('')}${(summary.errors || []).map(e => `<div>${escapeHtml(e.error)}</div>`).join('')}</details>
       </div></div>`;
   }

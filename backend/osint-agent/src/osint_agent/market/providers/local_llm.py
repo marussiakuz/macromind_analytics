@@ -64,6 +64,23 @@ class LocalLLM:
             await self._client.aclose()
             self._client = None
 
+    async def readiness(self) -> LLMResult:
+        """Cheap model readiness probe; never generates a completion."""
+        s = self.settings
+        url = s.base_url.removesuffix('/v1') + '/health'
+        try:
+            if self._client is None:
+                self._client = httpx.AsyncClient(timeout=httpx.Timeout(s.timeout_s))
+            response = await self._client.get(url, headers=s.headers, timeout=5.0)
+            if response.status_code >= 400:
+                return LLMResult(text='', ok=False, error_code='unavailable', model=s.model)
+            data = response.json()
+            if not isinstance(data, dict) or data.get('status') != 'ok':
+                return LLMResult(text='', ok=False, error_code='unavailable', model=s.model)
+            return LLMResult(text='', ok=True, model=s.model)
+        except (httpx.RequestError, ValueError):
+            return LLMResult(text='', ok=False, error_code='unavailable', model=s.model)
+
     async def complete(
         self, system: str, payload: dict[str, Any], *, json_schema: dict | None = None
     ) -> LLMResult:

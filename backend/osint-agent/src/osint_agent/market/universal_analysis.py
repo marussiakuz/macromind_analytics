@@ -13,6 +13,7 @@ from __future__ import annotations
 import inspect
 import logging
 import re
+import time
 from typing import Any
 
 log = logging.getLogger(__name__)
@@ -276,7 +277,7 @@ async def run_company_market_check(
     workspace_id: str | None = None, use_llm: bool = True,
     use_external_evidence: bool = True, use_discovery: bool = False,
     request_key: str | None = None, repo=None, registries: dict | None = None,
-    budget=None,
+    budget=None, progress_callback=None,
 ) -> dict:
     from osint_agent.market.auto_analysis import build_auto_analysis
     from osint_agent.market.analytical_report import (
@@ -308,8 +309,25 @@ async def run_company_market_check(
     llm.settings.timeout_s = max(180.0, float(app_settings.llm_timeout_s or 180.0))
     # Запас под completion: prompt + max_tokens не должны переполнять контекст (иначе HTTP 400).
     ctx_size = int(app_settings.llm_context_size or 4096)
-    llm.settings.max_tokens = max(1024, min(8000, ctx_size // 2))
+    llm.settings.max_tokens = max(1024, min(int(app_settings.llm_max_tokens), ctx_size // 2))
+    timings = []
+    phase, phase_started = None, time.monotonic()
+
+    def set_phase(step):
+        nonlocal phase, phase_started
+        now = time.monotonic()
+        if phase is not None:
+            timings.append({'stage': phase, 'seconds': round(now - phase_started, 3)})
+        phase, phase_started = step, now
+        llm.stage = step
+        if progress_callback is not None:
+            progress_callback(step)
+
     try:
+        set_phase('model_readiness')
+        if use_llm:
+            await llm.ensure_ready()
+        set_phase('company_sources')
         site = website_from_company(company)
         if site and not site.startswith(("http://", "https://")):
             site = "https://" + site
@@ -344,6 +362,7 @@ async def run_company_market_check(
             evidence = await _read_sources(evidence, limit=budget.consume_reads(8, label="company_sources"))
         evidence = [e for e in evidence if e.get("quote")]
         # Stage A (plan 2026-10-23): site verification + internal crawl + directions.
+        set_phase('company_profile')
         site_research = await research_company_profile(
             company, site_text=site_text, site_url=site, llm=llm if use_llm else None,
         )
@@ -357,7 +376,20 @@ async def run_company_market_check(
                 profile_sources[key] = row
         evidence = list(profile_sources.values())
         directions = site_research.get("directions") or []
-        profile = await infer_product_profile(company, evidence, llm) if use_llm and evidence else {}
+        # A supported single direction already supplies the product profile.
+        # Multi-direction or unconfirmed profiles still need the independent inference.
+        confirmed = [d for d in directions if d.get('status') == 'supported' and d.get('evidence')]
+        if len(directions) == 1 and len(confirmed) == 1 and site_research.get('directions_site_trusted'):
+            direction = confirmed[0]
+            profile = {
+                'product': direction.get('product_category_ru'),
+                'product_en': direction.get('product_category_en'),
+                'buyer': '; '.join(direction.get('buyer_segments') or []),
+                'about': direction.get('description') or site_research.get('about'),
+                'evidence_ids': direction.get('evidence_ids') or [],
+            }
+        else:
+            profile = await infer_product_profile(company, evidence, llm) if use_llm and evidence else {}
         product = profile.get("product")
         if directions and not product:
             product = directions[0].get("product_category_ru")
@@ -387,6 +419,7 @@ async def run_company_market_check(
             for item in research_limits:
                 if item not in summary["limitations"]:
                     summary["limitations"].append(item)
+        set_phase('market_sources')
         if product and use_external_evidence:
             en = profile.get("search_category_en") or profile.get("product_en") or product
             category = profile.get("search_category") or product
@@ -437,6 +470,7 @@ async def run_company_market_check(
             if key not in unique or len(e.get("quote") or "") > len(unique[key].get("quote") or ""):
                 unique[key] = e
         evidence = list(unique.values())[:55]
+        set_phase('competitor_research')
         if use_llm and use_external_evidence and product:
             # Stage B (plan 2026-10-23): per-direction candidates + relation classes.
             from osint_agent.market.competitor_research import discover_direction_candidates
@@ -493,6 +527,9 @@ async def run_company_market_check(
         summary["external_evidence"] = evidence
         summary["external_source_states"] = states
         summary["evidence_refs"] = [dict(e, name=e.get("title"), statement=e.get("quote")) for e in evidence]
+        set_phase('report_and_audit')
+        # Final structured report needs more output space than profile extraction.
+        llm.settings.max_tokens = max(1024, min(4096, ctx_size // 2))
         interpretation = await interpret_market_report(summary, evidence, llm) if use_llm and product else {}
         if interpretation.get("error"):
             errors.append({"step": "interpretation", "error": interpretation["error"]})
@@ -533,6 +570,9 @@ async def run_company_market_check(
         summary["errors"] = errors
         summary["discovery"] = {"mode": "inline_sources", "ingested_for_report": len(evidence),
                                 "note": "Источники сохранены в версии отчёта; отдельный сбор не дублируется."}
+        set_phase('saving')
+        summary['stage_timings'] = timings
+        summary['model_calls'] = llm.calls
         summary["research_budget"] = budget.snapshot()
         if errors and not has_content:
             raise RuntimeError("Не удалось проверить выводы: " + str(errors[0]["error"]))

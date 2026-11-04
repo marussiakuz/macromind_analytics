@@ -280,3 +280,29 @@ async def test_research_auth_error_is_actionable_and_keeps_previous_report(clien
     assert repo.latest_analysis_for(legal_entity_inn='123')['analysis_version_id']==old['analysis_version_id']
     row=repo.connect().execute('select status,error from research_jobs where id=?',(error['job_id'],)).fetchone()
     assert row['status']=='failed' and row['error']=='yandex_search:auth_error'
+
+
+async def test_progress_reports_actual_stage_without_company_payload(client, repo):
+    job = repo.create_job(kind='auto_analysis', legal_entity_inn='123', owner_token='test-progress')
+    repo.update_job_step(job['id'], 'competitor_research')
+    response = await client.get('/api/v1/market/auto-analysis/progress', params={'request_key': 'test-progress'})
+    assert response.status_code == 200
+    assert response.json()['step'] == 'competitor_research'
+    assert set(response.json()) == {'status', 'step', 'updated_at'}
+    repo.finish_job(job['id'], status='failed', error='private error')
+    repo.update_job_step(job['id'], 'saving')
+    assert repo.job_by_token('test-progress')['step'] == 'competitor_research'
+    assert (await client.get('/api/v1/market/auto-analysis/progress', params={'request_key': 'missing'})).status_code == 404
+
+
+async def test_model_outage_is_retryable_and_does_not_replace_saved_report(client, repo, monkeypatch):
+    from osint_agent.market.research_errors import ResearchDependencyError
+    old = repo.save_analysis_version({'legal_entity_inn': '123', 'company_name': 'Тест'})
+    async def fail(**kwargs):
+        kwargs['progress_callback']('model_readiness')
+        raise ResearchDependencyError('local_llm', 'unavailable')
+    monkeypatch.setattr('osint_agent.market.universal_analysis.run_company_market_check', fail)
+    response = await client.post('/api/v1/market/auto-analysis', json={'company': {'inn': '123'}})
+    assert response.status_code == 503
+    assert response.json()['detail']['error']['retryable'] is True
+    assert repo.latest_analysis_for(legal_entity_inn='123')['analysis_version_id'] == old['analysis_version_id']

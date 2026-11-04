@@ -19,7 +19,7 @@ async def test_search_auth_failure_stops_before_crawl_and_save(monkeypatch):
                         lambda *a, **kw: Search())
     monkeypatch.setattr('osint_agent.market.universal_analysis.research_company_profile',crawl)
     with pytest.raises(ResearchDependencyError) as exc:
-        await run_company_market_check(inn='123',company={'inn':'123','name':'Новая компания'})
+        await run_company_market_check(inn='123',company={'inn':'123','name':'Новая компания'}, use_llm=False)
     assert exc.value.source=='yandex_search'
     assert calls==['search','close']
 

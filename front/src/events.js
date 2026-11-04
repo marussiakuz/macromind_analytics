@@ -818,13 +818,15 @@ export function setupEventListeners(renderApp) {
       moduleLoading.market = 'waiting_checko';
       r();
       if (checkoReady && newRecord.company) {
-        await runAutoMarketAnalysis({
+        const marketTask = runAutoMarketAnalysis({
           company: newRecord.company,
           finances: newRecord.finances,
           registries: Object.fromEntries(
             REGISTRY_SECTIONS.map(s => [s.key, newRecord.registries?.[s.key]?.data || null]),
           ),
         });
+        r();
+        await marketTask;
       }
       moduleLoading.market = false;
 
@@ -998,6 +1000,7 @@ export function setupEventListeners(renderApp) {
           }).then(() => {
             if (state.currentPage === 'fund') renderApp();
           });
+          renderApp();
         }
       }
     });

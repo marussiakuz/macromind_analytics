@@ -694,6 +694,7 @@ async def auto_analysis(body: AutoAnalysisIn) -> dict[str, Any]:
             use_discovery=body.use_discovery,
             request_key=body.request_key,
             repo=repo,
+            progress_callback=lambda step: repo.update_job_step(job['id'], step),
         ), timeout=1800)  # запас над ResearchBudget.max_seconds: локальная модель на CPU
         saved = out.get("saved") or out
         repo.finish_job(
@@ -707,7 +708,7 @@ async def auto_analysis(body: AutoAnalysisIn) -> dict[str, Any]:
         repo.finish_job(job["id"], status="failed", error=f"{exc.source}:{exc.code}")
         raise HTTPException(status_code=503, detail={"error": {
             "code": exc.code, "source": exc.source, "message": exc.public_message,
-            "retryable": False, "job_id": job["id"],
+            "retryable": exc.code in ("unavailable", "timeout", "rate_limited"), "job_id": job["id"],
         }}) from exc
     except asyncio.TimeoutError as exc:
         repo.finish_job(job["id"], status="failed", error="analysis_timeout")
@@ -715,6 +716,15 @@ async def auto_analysis(body: AutoAnalysisIn) -> dict[str, Any]:
     except Exception as exc:
         repo.finish_job(job["id"], status="failed", error=str(exc)[:300])
         raise HTTPException(status_code=500, detail="Анализ не завершен; прежние версии сохранены") from exc
+
+
+@router.get("/auto-analysis/progress")
+async def get_analysis_progress(request_key: str) -> dict[str, Any]:
+    job = get_repo().job_by_token(request_key)
+    if not job:
+        raise HTTPException(status_code=404, detail="Исследование ещё не запущено")
+    # No company data or raw provider errors in progress polling.
+    return {key: job.get(key) for key in ('status', 'step', 'updated_at')}
 
 
 @router.get("/auto-analysis")

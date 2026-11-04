@@ -1,5 +1,7 @@
 """Public, credential-free errors for required research services."""
 
+import time
+
 _SERVICE_LABELS = {
     'yandex_search': 'Поиск Yandex',
     'yandex_studio': 'Модель Yandex Studio',
@@ -8,6 +10,7 @@ _SERVICE_LABELS = {
     'local_llm': 'Локальная модель (llama-server)',
 }
 _REASONS = {
+    'timeout': 'не ответила вовремя. Повторите исследование позже',
     'auth_error': 'отклоняет авторизацию. Проверьте ключ и права доступа на сервере',
     'not_configured': 'не настроен на сервере',
     'payment_required': 'сообщает проблему оплаты или баланса. Проверьте ключ и оплату на сервере',
@@ -56,16 +59,30 @@ class ResearchLLM:
     def __init__(self, client):
         self.client = client
         self.settings = client.settings
+        self.calls = []
 
     def _source(self) -> str:
-        if type(self.client).__name__ == 'LocalLLM':
+        if getattr(self.client, 'name', '') == 'local_llm' or type(self.client).__name__ == 'LocalLLM':
             return 'local_llm'
         return 'yandex_studio'
 
+    async def ensure_ready(self):
+        probe = getattr(self.client, 'readiness', None)
+        if probe is not None:
+            result = await probe()
+            if not result.ok:
+                raise ResearchDependencyError(self._source(), result.error_code or 'unavailable')
+
     async def complete(self, *args, **kwargs):
+        started = time.monotonic()
         result = await self.client.complete(*args, **kwargs)
+        self.calls.append({'stage': getattr(self, 'stage', 'unknown'), 'seconds': round(time.monotonic() - started, 3),
+                           'ok': bool(getattr(result, 'ok', False)),
+                           'prompt_tokens': getattr(result, 'prompt_tokens', 0),
+                           'completion_tokens': getattr(result, 'completion_tokens', 0),
+                           'error_code': getattr(result, 'error_code', None)})
         code = getattr(result, 'error_code', None)
-        if code in ('auth_error', 'not_configured'):
+        if code in ('auth_error', 'not_configured', 'unavailable', 'timeout'):
             raise ResearchDependencyError(self._source(), code)
         return result
 
