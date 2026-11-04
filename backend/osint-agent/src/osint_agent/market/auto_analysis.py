@@ -649,9 +649,19 @@ async def add_llm_interpretation(summary: dict[str, Any], llm=None) -> dict[str,
     """Qwen only after evidence validation (spec §6, F13–F15)."""
     from osint_agent.market.providers.yandex_llm import (
         INTERPRETATION_SYSTEM,
-        YandexStudioLLM,
         parse_interpretation,
     )
+    from osint_agent.market.providers.factory import get_llm_client
+
+    def _clip_evidence(rows):
+        clipped = []
+        for e in (rows or [])[:20]:
+            row = dict(e)
+            for field in ("quote", "abstract"):
+                if isinstance(row.get(field), str):
+                    row[field] = row[field][:500]
+            clipped.append(row)
+        return clipped
 
     evidence_ids = {str(e.get("id")) for e in (summary.get("evidence_refs") or []) if isinstance(e, dict)}
     evidence_by_id = {
@@ -659,7 +669,7 @@ async def add_llm_interpretation(summary: dict[str, Any], llm=None) -> dict[str,
         for e in (summary.get("evidence_refs") or [])
         if isinstance(e, dict) and e.get("id")
     }
-    client = llm or YandexStudioLLM()
+    client = llm or get_llm_client()
     try:
         result = await client.complete(
             INTERPRETATION_SYSTEM,
@@ -669,7 +679,7 @@ async def add_llm_interpretation(summary: dict[str, Any], llm=None) -> dict[str,
                     "inn": summary.get("legal_entity_inn"),
                     "product_scope": summary.get("product_scope"),
                 },
-                "evidence": summary.get("evidence_refs"),
+                "evidence": _clip_evidence(summary.get("evidence_refs")),
                 "calculations": summary.get("finance_summary"),
                 "facts": {
                     "related_organizations": summary.get("related_organizations"),
@@ -784,6 +794,16 @@ async def add_llm_interpretation_cached(summary: dict[str, Any], llm=None) -> di
     )
     from osint_agent.market.providers.yandex_llm import INTERPRETATION_SYSTEM
 
+    def _clip_evidence(rows):
+        clipped = []
+        for e in (rows or [])[:20]:
+            row = dict(e)
+            for field in ("quote", "abstract"):
+                if isinstance(row.get(field), str):
+                    row[field] = row[field][:500]
+            clipped.append(row)
+        return clipped
+
     evidence_ids = {str(e.get("id")) for e in (summary.get("evidence_refs") or []) if isinstance(e, dict)}
     evidence_by_id = {
         str(e.get("id")): e
@@ -795,7 +815,7 @@ async def add_llm_interpretation_cached(summary: dict[str, Any], llm=None) -> di
             "inn": summary.get("legal_entity_inn"),
             "product_scope": summary.get("product_scope"),
         },
-        "evidence": summary.get("evidence_refs"),
+        "evidence": _clip_evidence(summary.get("evidence_refs")),
         "facts": {
             "related_organizations": summary.get("related_organizations"),
             "legal_events": summary.get("legal_events"),

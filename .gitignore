@@ -50,6 +50,7 @@ coverage/
 **/models/hf/
 
 # Local editor/OS files
+/docs/
 .idea/
 .vscode/
 .DS_Store

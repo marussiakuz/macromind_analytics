@@ -52,8 +52,8 @@ async def test_pipeline_persists_interpreted_sources_without_live_network(monkey
         async def aclose(self): pass
     async def read(items, **kw): return items
     async def collect(*a, **kw): return {'evidence': [], 'source_states': []}
-    monkeypatch.setattr('osint_agent.market.providers.web_search.YandexSearchProvider', Search)
-    monkeypatch.setattr('osint_agent.market.providers.yandex_llm.YandexStudioLLM', LLM)
+    monkeypatch.setattr('osint_agent.market.providers.search_factory.get_search_provider', lambda *a, **kw: Search())
+    monkeypatch.setattr('osint_agent.market.providers.factory.get_llm_client', lambda *a, **kw: LLM())
     monkeypatch.setattr('osint_agent.market.universal_analysis._read_sources', read)
     monkeypatch.setattr('osint_agent.market.evidence.collect_market_evidence', collect)
     repo = MarketRepository(tmp_path / 'market.sqlite')
@@ -139,7 +139,7 @@ async def test_candidate_discovery_searches_product_pages_and_ignores_invented_n
                 {'name':'Завод Альфа','product':'насосы','evidence_id':sid},
                 {'name':'Выдуманный завод','product':'насосы','evidence_id':sid}], 'world':[]}),error=None)
     async def read(rows, **kwargs): return rows
-    monkeypatch.setattr('osint_agent.market.providers.web_search.YandexSearchProvider', Search)
+    monkeypatch.setattr('osint_agent.market.providers.search_factory.get_search_provider', lambda *a, **kw: Search())
     monkeypatch.setattr('osint_agent.market.universal_analysis._read_sources', read)
     rows, states = await _collect_competitor_product_pages({'product':'насосы'}, [
         {'id':'s','title':'Каталог','url':'https://catalog.example',

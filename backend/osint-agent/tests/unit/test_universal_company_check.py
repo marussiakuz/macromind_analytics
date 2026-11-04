@@ -82,7 +82,7 @@ async def _fake_discovery(summary, workspace_id=None, fetch_externals=True):
 def patch_stack(monkeypatch):
     monkeypatch.setattr(
         "osint_agent.market.evidence.collect_market_evidence",
-        lambda company, llm_unused=None: _fake_collect_ok(),
+        lambda company, llm_unused=None, budget=None: _fake_collect_ok(),
     )
     monkeypatch.setattr(
         "osint_agent.market.auto_analysis.discover_reports_for_company",
@@ -101,7 +101,7 @@ def patch_stack(monkeypatch):
         async def search(self, *a, **k):
             return SearchPage(items=[], status=SourceStatus.empty)
         async def aclose(self): pass
-    async def competitor_pages(*args): return [], []
+    async def competitor_pages(*args, **kwargs): return [], []
     monkeypatch.setattr("osint_agent.market.universal_analysis._collect_competitor_product_pages", competitor_pages)
     async def read(items, **k): return items
     async def profile(company, evidence, llm):
@@ -109,7 +109,7 @@ def patch_stack(monkeypatch):
     async def interpret(summary, evidence, llm):
         return {'sections': {'russia': [{'text': 'Описание рынка из источника', 'evidence_ids': ['openalex:test1'], 'quotes': []}]},
                 'competitors': {'russia': [{'name': 'ПолимерТех', 'specialization': 'Поставляет оборудование', 'why_competes': 'Оборудование для промышленных предприятий', 'quotes': [{'evidence_id': 'yandex:snip1', 'quote': 'ООО ПолимерТех поставляет оборудование'}]}], 'world': []}}
-    monkeypatch.setattr('osint_agent.market.providers.web_search.YandexSearchProvider', Search)
+    monkeypatch.setattr('osint_agent.market.providers.search_factory.get_search_provider', lambda *a, **kw: Search())
     monkeypatch.setattr('osint_agent.market.universal_analysis._read_sources', read)
     monkeypatch.setattr('osint_agent.market.analytical_report.infer_product_profile', profile)
     monkeypatch.setattr('osint_agent.market.analytical_report.interpret_market_report', interpret)
@@ -274,7 +274,7 @@ async def test_universal_source_error(monkeypatch):
     class Search:
         async def search(self, *a, **k): return SearchPage(items=[], status=SourceStatus.error)
         async def aclose(self): pass
-    monkeypatch.setattr("osint_agent.market.providers.web_search.YandexSearchProvider", Search)
+    monkeypatch.setattr("osint_agent.market.providers.search_factory.get_search_provider", lambda *a, **kw: Search())
     async def down(summary, collect=None):
         summary = dict(summary)
         summary["external_source_states"] = [{"source": "yandex", "status": "error"}]
@@ -335,3 +335,21 @@ async def test_crawled_product_pages_reach_profile_and_interpretation(patch_stac
     result=await run_company_market_check(inn='123',company={'inn':'123','name':'Новая компания'},repo=FakeRepo())
     assert seen==['profile','interpret']
     assert page in result['external_evidence']
+
+
+@pytest.mark.asyncio
+async def test_pipeline_does_not_precharge_stage_b_budget(patch_stack, monkeypatch):
+    observed = []
+
+    async def discover(company, directions, *, budget, query_budget, **kwargs):
+        observed.append((budget.used_search, query_budget))
+        assert query_budget == budget.max_search_queries - budget.used_search
+        assert budget.consume_search(1, label='test_stage_b') == 1
+        return {'accepted': [], 'source_states': [], 'limitations': []}
+
+    monkeypatch.setattr('osint_agent.market.competitor_research.discover_direction_candidates', discover)
+    await run_company_market_check(
+        inn='7701', company={'inn': '7701', 'name': 'Тест', 'product': 'полимеры',
+                             'buyer': 'предприятия'},
+        site_text='Производство полимеров для предприятий.', repo=FakeRepo())
+    assert observed and observed[0][1] > 0

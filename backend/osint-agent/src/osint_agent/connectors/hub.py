@@ -25,7 +25,7 @@ class DataConnectorHub:
         "counterparty_reliability": ["checko"],
         "court_cases": ["kad", "cached_kad"],
         "sanctions": ["live_sanctions", "local_mirror"],
-        "news": ["tavily", "brave", "rss"],
+        "news": ["tavily", "rss"],
         "tax_debt": ["fns_tax"],
         "bailiff": ["fssp"],
         "tenders": ["tenders"],

@@ -1147,11 +1147,11 @@ async def discover_site_hints(
         return [], [], [], []
 
     try:
-        from osint_agent.market.providers.web_search import YandexSearchProvider
+        from osint_agent.market.providers.search_factory import get_search_provider
     except Exception as exc:
         return [], [], [{"source": "site_discovery", "status": "error", "message": type(exc).__name__}], []
 
-    search = YandexSearchProvider()
+    search = get_search_provider()
     states: list[dict[str, Any]] = []
     hits: list[tuple[str, str]] = []
     snippets: list[dict[str, Any]] = []

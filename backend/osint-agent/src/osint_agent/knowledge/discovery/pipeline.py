@@ -25,6 +25,12 @@ from osint_agent.knowledge.discovery.queries import (
 )
 from osint_agent.knowledge.discovery.yandex_publisher import DiscoveryHit, search_yandex
 
+
+def _hit_prefix(hit: DiscoveryHit) -> str:
+    """Префикс происхождения документа: exa | tavily | yandex (без суффикса _search)."""
+    src = (hit.source or "").strip()
+    return src.replace("_search", "") or "web"
+
 log = logging.getLogger(__name__)
 
 
@@ -123,13 +129,14 @@ async def discover_and_ingest(
             out.failed += 1
             out.details.append({"source": "openalex", "error": type(exc).__name__})
 
-    # --- Fetch Yandex originals (publisher pages / PDFs) ----------------
+    # --- Fetch search originals (publisher pages / PDFs) ----------------
     budget = max_yandex_docs
     for hit in yandex_hits:
         if budget <= 0:
             break
+        origin_prefix = _hit_prefix(hit)
         meta = {
-            "source": "yandex",
+            "source": hit.source or "web_search",
             "query": hit.query,
             "publisher": hit.publisher,
             "claim_type": "lead",
@@ -146,14 +153,14 @@ async def discover_and_ingest(
                     source_type="web",
                     url=hit.url,
                     title=hit.title,
-                    origin_id=f"yandex:{hit.url}",
+                    origin_id=f"{origin_prefix}:{hit.url}",
                     mime_type="text/plain",
                     workspace_id=workspace_id,
                     metadata=meta,
                 )
                 if res.chunk_ids:
                     out.ingested += 1
-                    out.by_source["yandex"] = out.by_source.get("yandex", 0) + 1
+                    out.by_source[origin_prefix] = out.by_source.get(origin_prefix, 0) + 1
             except Exception:
                 out.failed += 1
             budget -= 1
@@ -199,7 +206,7 @@ async def discover_and_ingest(
                 source_type="web",
                 url=hit.url,
                 title=hit.title,
-                origin_id=f"sha256:{fr.sha256}" if fr.sha256 else f"yandex:{hit.url}",
+                origin_id=f"sha256:{fr.sha256}" if fr.sha256 else f"{origin_prefix}:{hit.url}",
                 mime_type=fr.content_type or ("application/pdf" if is_pdf else "text/html"),
                 filename=hit.title[:40] + (".pdf" if is_pdf else ".html"),
                 workspace_id=workspace_id,
@@ -207,10 +214,10 @@ async def discover_and_ingest(
             )
             if res.chunk_ids:
                 out.ingested += 1
-                out.by_source["yandex"] = out.by_source.get("yandex", 0) + 1
+                out.by_source[origin_prefix] = out.by_source.get(origin_prefix, 0) + 1
                 out.by_source[f"kind:{prov.kind}"] = out.by_source.get(f"kind:{prov.kind}", 0) + 1
                 out.details.append({
-                    "source": "yandex", "url": hit.url,
+                    "source": hit.source or "web_search", "url": hit.url,
                     "read_level": meta["read_level"], "document_id": res.document_id,
                     "source_kind": prov.kind,
                     "primary_parsed": prov.primary_parsed,

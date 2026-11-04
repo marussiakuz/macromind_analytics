@@ -380,8 +380,8 @@ async def discover_direction_candidates(
     Extends the existing competitor-product-page flow with direction binding and
     relation classes. Directories/catalogs only discover candidates.
     """
-    from osint_agent.market.evidence import _evidence_from_yandex
-    from osint_agent.market.providers.web_search import YandexSearchProvider
+    from osint_agent.market.evidence import _evidence_from_search, source_of
+    from osint_agent.market.providers.search_factory import get_search_provider
 
     own_names = [
         str(company.get("name") or ""),
@@ -422,12 +422,20 @@ async def discover_direction_candidates(
             queries.append({"direction_id": did, "query": q, "region": "RU"})
 
     queries = queries[:query_budget]
+    skipped_queries: list[dict[str, Any]] = []
     if budget is not None and hasattr(budget, "can_search"):
-        # Cap by residual shared budget (Astra P2).
+        # Cap by residual shared budget (Astra P2). Невыполненная часть — явно.
         allowed = budget.consume_search(len(queries), label="stage_b_queries")
+        skipped_queries = queries[allowed:]
         queries = queries[:allowed]
-    search = YandexSearchProvider()
+    search = get_search_provider(budget=budget)
     states: list[dict[str, Any]] = []
+    for item in skipped_queries:
+        states.append({"source": "direction_competitor_search", "status": "not_executed",
+                       "direction_id": item.get("direction_id"), "query": item["query"],
+                       "lang": "en" if item.get("region") == "COM" else "ru",
+                       "region": item.get("region"),
+                       "message": "Запрос не выполнен: исчерпан бюджет исследования"})
     discovered: dict[str, list[dict[str, Any]]] = {}  # name_norm -> rows
 
     async def run_query(item: dict[str, Any]):
@@ -437,7 +445,7 @@ async def discover_direction_candidates(
                 filters={"region": "RU" if item.get("region") == "RU" else "COM"},
                 budget=_SEARCH_BUDGET,
             )
-            rows = _evidence_from_yandex(page.items, page.query or item["query"])
+            rows = _evidence_from_search(page.items, page.query or item["query"], source_of(page, search))
             for r in rows:
                 r["direction_id"] = item.get("direction_id")
                 r["search_region"] = item.get("region")
@@ -446,6 +454,8 @@ async def discover_direction_candidates(
                 "direction_id": item.get("direction_id"),
                 "query": item["query"],
                 "region": item.get("region"),
+                "lang": "en" if item.get("region") == "COM" else "ru",
+                "search_provider": source_of(page, search),
                 "status": page.status.value,
                 "count": len(rows),
                 "message": page.message,
@@ -614,6 +624,8 @@ async def discover_direction_candidates(
         limitations.append(f"Часть запросов rate_limited: {rate_limited}")
     if any(s.get("status") in {"error", "unavailable"} for s in states):
         limitations.append("Часть источников недоступна; частичный результат сохранён")
+    if skipped_queries:
+        limitations.append(f"Не выполнено запросов по бюджету: {len(skipped_queries)} (см. queries_skipped)")
 
     return {
         "candidates_table": table,
@@ -625,6 +637,7 @@ async def discover_direction_candidates(
         },
         "source_states": states,
         "queries_used": queries,
+        "queries_skipped": skipped_queries,
         "limitations": limitations,
         "suppliers_excluded": supplier_names,
         "note": (

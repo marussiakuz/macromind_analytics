@@ -58,13 +58,33 @@ class Settings(BaseSettings):
     kontur_api_key: str = ""
     proxycurl_api_key: str = ""
     tavily_api_key: str = ""
-    brave_api_key: str = ""
+    tavily_search_depth: str = "advanced"  # advanced | basic | fast | ultra-fast
+    exa_api_key: SecretStr = SecretStr("")
     crunchbase_api_key: str = ""
     shodan_api_key: str = ""  # Optional — Shodan не падает без ключа
     # Market module (plan §7)
     yandex_api_key: SecretStr = SecretStr("")
     yandex_folder_id: str = ""
     openalex_api_key: SecretStr = SecretStr("")
+
+    # LLM provider (MIMO Market Recovery §3)
+    llm_provider: str = "yandex"  # "yandex" | "local"
+    llm_base_url: str = ""  # e.g. http://127.0.0.1:8080/v1 for llama-server
+    llm_model: str = ""  # model name / URI; empty = provider default
+    llm_api_key: SecretStr = SecretStr("")  # optional for local
+    llm_context_size: int = 4096
+    llm_max_tokens: int = 2000
+    llm_timeout_s: float = 180.0
+    llm_temperature: float = 0.0
+
+    # Search provider (MIMO_EXA_SETUP / MIMO_TAVILY_SETUP)
+    search_provider: str = "exa"  # "exa" | "tavily" | "yandex"
+    search_fallback: bool = False  # явно включённое резервирование (Tavily при недоступности основного)
+    search_fallback_provider: str = "tavily"
+    search_fallback_budget: int = 2  # остаточный бюджет запасных запросов на исследование
+
+    # GLiNER multi-v2.1 — отдельный процесс (MIMO_MARKET_RECOVERY §7)
+    gliner_base_url: str = "http://127.0.0.1:8010"
 
     # Knowledge / RAG (Task2 §13)
     knowledge_database_url: str = ""

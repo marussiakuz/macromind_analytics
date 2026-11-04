@@ -65,8 +65,10 @@ def _parse_access_table(raw: str) -> dict[str, tuple[str, frozenset[str]]]:
 
 
 def _service_token() -> str:
-    apply = getattr(settings, "knowledge_internal_token", "") or os.environ.get(
-        "KNOWLEDGE_INTERNAL_TOKEN", ""
+    # Runtime env first (tests and service managers override the .env snapshot),
+    # then settings loaded from .env.
+    apply = os.environ.get("KNOWLEDGE_INTERNAL_TOKEN", "") or getattr(
+        settings, "knowledge_internal_token", ""
     )
     return (apply or "").strip()
 

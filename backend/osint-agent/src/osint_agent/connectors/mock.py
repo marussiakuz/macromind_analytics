@@ -306,7 +306,7 @@ class MockSanctionConnector(BaseConnector):
 class MockNewsConnector(BaseConnector):
     """Mock connector for news search.
 
-    Uses: Tavily, Brave Search, RSS feeds.
+    Uses: Tavily, RSS feeds.
     """
 
     MOCK_DATA: dict[str, list[dict[str, Any]]] = {

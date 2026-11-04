@@ -11,10 +11,12 @@ async def test_search_auth_failure_stops_before_crawl_and_save(monkeypatch):
     class Search:
         async def search(self,*a,**kw):
             calls.append('search')
-            return SearchPage(items=[],status=SourceStatus.error,error_code='auth_error')
+            return SearchPage(items=[],status=SourceStatus.error,error_code='auth_error',
+                              source='yandex_search')
         async def aclose(self): calls.append('close')
     async def crawl(*a,**kw): raise AssertionError('Must not crawl after permanent auth error')
-    monkeypatch.setattr('osint_agent.market.providers.web_search.YandexSearchProvider',Search)
+    monkeypatch.setattr('osint_agent.market.providers.search_factory.get_search_provider',
+                        lambda *a, **kw: Search())
     monkeypatch.setattr('osint_agent.market.universal_analysis.research_company_profile',crawl)
     with pytest.raises(ResearchDependencyError) as exc:
         await run_company_market_check(inn='123',company={'inn':'123','name':'Новая компания'})

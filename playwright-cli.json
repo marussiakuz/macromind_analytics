@@ -1,0 +1,11 @@
+{
+  "browser": {
+    "launchOptions": {
+      "executablePath": "/home/oem/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+      "headless": true
+    },
+    "contextOptions": {
+      "viewport": { "width": 1440, "height": 900 }
+    }
+  }
+}

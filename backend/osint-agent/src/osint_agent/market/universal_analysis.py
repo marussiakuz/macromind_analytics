@@ -170,7 +170,7 @@ async def _read_sources(items: list[dict], limit: int = 8) -> list[dict]:
             return row
         async with sem:
             try:
-                result = await asyncio.wait_for(fetch_document(url), timeout=20)
+                result = await asyncio.wait_for(fetch_document(url), timeout=12)
                 if not result.ok or not result.data:
                     row["fetch_status"] = result.error_code or "empty"
                     return row
@@ -180,7 +180,7 @@ async def _read_sources(items: list[dict], limit: int = 8) -> list[dict]:
                     def parse_pdf():
                         with pdfplumber.open(io.BytesIO(result.data)) as pdf:
                             return "\n".join(f"Страница {i+1}: {page.extract_text() or ''}"
-                                             for i, page in enumerate(pdf.pages[:20]))
+                                             for i, page in enumerate(pdf.pages[:8]))
                     text = await asyncio.to_thread(parse_pdf)
                     row["locator"] = "Извлечённый текст первых 20 страниц; фрагмент"
                 else:
@@ -201,13 +201,13 @@ async def _read_sources(items: list[dict], limit: int = 8) -> list[dict]:
     return selected + items[limit:]
 
 
-async def _collect_competitor_product_pages(scope, evidence, llm):
+async def _collect_competitor_product_pages(scope, evidence, llm, budget=None):
     """Use directories only for discovery; then search candidate product pages."""
     import asyncio
     from osint_agent.market.analytical_report import build_report_passages, object_schema, array_schema
     from osint_agent.market.providers.yandex_llm import parse_interpretation
-    from osint_agent.market.providers.web_search import YandexSearchProvider
-    from osint_agent.market.evidence import _evidence_from_yandex
+    from osint_agent.market.providers.search_factory import get_search_provider
+    from osint_agent.market.evidence import _evidence_from_search, source_of
     passages = build_report_passages(evidence, scope)
     schema = object_schema({group: array_schema(object_schema({
         'name': {'type': 'string', 'maxLength': 120},
@@ -239,12 +239,16 @@ async def _collect_competitor_product_pages(scope, evidence, llm):
                 continue
             seen.add(norm(name))
             candidates.append((group, name, str(item.get('product') or scope.get('product') or '')))
-    search, sem = YandexSearchProvider(), asyncio.Semaphore(3)
+    search, sem = get_search_provider(budget=budget), asyncio.Semaphore(3)
     async def lookup(group, name, product):
         async with sem:
             query = f'"{name}" {product} ' + ('официальный сайт продукция' if group == 'russia' else 'official products')
+            if budget is not None and not budget.consume_search(1, label="competitor_product_search"):
+                return [], {'source': 'competitor_product_search', 'candidate': name,
+                            'query': query, 'status': 'not_executed',
+                            'message': 'Исчерпан бюджет поиска или времени исследования'}
             page = await search.search(query, filters={'region':'RU' if group == 'russia' else 'COM'}, budget=3)
-            rows = _evidence_from_yandex(page.items, page.query or query)
+            rows = _evidence_from_search(page.items, page.query or query, source_of(page, search))
             for row in rows:
                 row['competitor_candidate'] = name
             return rows, {'source':'competitor_product_search','candidate':name,
@@ -260,7 +264,10 @@ async def _collect_competitor_product_pages(scope, evidence, llm):
         else:
             rows.extend(result[0]); states.append(result[1])
     # Read every bounded candidate result, including pages beyond the general-search budget.
-    return await _read_sources(rows, limit=len(rows)), states
+    read_limit = min(len(rows), 10)
+    if budget is not None:
+        read_limit = budget.consume_reads(read_limit, label="competitor_product_pages")
+    return await _read_sources(rows, limit=read_limit), states
 
 
 async def run_company_market_check(
@@ -276,9 +283,9 @@ async def run_company_market_check(
         build_analytical_report, render_analytical_report_html, infer_product_profile,
         interpret_market_report, REPORT_SCHEMA_VERSION,
     )
-    from osint_agent.market.evidence import collect_market_evidence, _evidence_from_yandex
-    from osint_agent.market.providers.web_search import YandexSearchProvider
-    from osint_agent.market.providers.yandex_llm import YandexStudioLLM
+    from osint_agent.market.evidence import collect_market_evidence, _evidence_from_search, source_of
+    from osint_agent.market.providers.search_factory import get_search_provider
+    from osint_agent.market.providers.factory import get_llm_client
     from osint_agent.market.research_budget import ResearchBudget
 
     if budget is None:
@@ -295,9 +302,13 @@ async def run_company_market_check(
     summary["finances"] = finances or {}
     states, evidence, errors = [], [], []
     from osint_agent.market.research_errors import ResearchLLM, check_search_access
-    llm = ResearchLLM(YandexStudioLLM())
-    llm.settings.max_tokens = 8000
-    llm.settings.timeout_s = 180.0
+    llm = ResearchLLM(get_llm_client())
+    # Тайм-аут модели берём из настроек: локальная модель на CPU медленнее облачной.
+    from osint_agent.config import settings as app_settings
+    llm.settings.timeout_s = max(180.0, float(app_settings.llm_timeout_s or 180.0))
+    # Запас под completion: prompt + max_tokens не должны переполнять контекст (иначе HTTP 400).
+    ctx_size = int(app_settings.llm_context_size or 4096)
+    llm.settings.max_tokens = max(1024, min(8000, ctx_size // 2))
     try:
         site = website_from_company(company)
         if site and not site.startswith(("http://", "https://")):
@@ -310,21 +321,22 @@ async def run_company_market_check(
             evidence.append({"id": "company:site", "title": name, "quote": "", "url": site,
                              "source_id": "company_website", "read_level": "metadata_only"})
         if use_external_evidence:
-            search = YandexSearchProvider()
+            search = get_search_provider(budget=budget)
             try:
                 page = await search.search(f'"{search_name}" {inn} официальный сайт продукция',
                                            filters={"region": "RU"}, budget=5)
                 check_search_access(page)
                 states.append({"source": "company_search", "status": page.status.value,
-                               "count": len(page.items), "message": page.message})
-                evidence.extend(_evidence_from_yandex(page.items, page.query or name))
+                               "count": len(page.items), "message": page.message, "lang": "ru"})
+                evidence.extend(_evidence_from_search(page.items, page.query or name, source_of(page, search)))
                 # INN searches mostly return registries. A separate branded product query finds the website.
                 products_page = await search.search(f'"{search_name}" продукты технологии официальный сайт',
                                                     filters={"region": "RU"}, budget=5)
                 check_search_access(products_page)
                 states.append({"source": "company_products", "status": products_page.status.value,
-                               "count": len(products_page.items), "message": products_page.message})
-                product_hits = _evidence_from_yandex(products_page.items, products_page.query or name)
+                               "count": len(products_page.items), "message": products_page.message, "lang": "ru"})
+                product_hits = _evidence_from_search(products_page.items, products_page.query or name,
+                                                     source_of(products_page, search))
                 evidence = product_hits + evidence
             finally:
                 await search.aclose()
@@ -379,20 +391,28 @@ async def run_company_market_check(
             en = profile.get("search_category_en") or profile.get("product_en") or product
             category = profile.get("search_category") or product
             # Balanced query budget: RU/world markets and competitors all receive queries.
+            # Обязательная проверка двух языков: RU и EN запросы независимы.
             queries = [
-                {"query": f"{category} рынок Россия исследование объем спрос", "region": "RU"},
-                {"query": f"{en} market size industry report forecast", "region": "COM"},
-                {"query": f"{category} российские производители компании аналоги", "region": "RU"},
-                {"query": f"{en} manufacturers vendors companies products", "region": "COM"},
-                {"query": f"{category} сравнение поставщиков конкуренты", "region": "RU"},
-                {"query": f"{en} leading suppliers comparison applications", "region": "COM"},
-                {"query": f"{category} покупатели применение ограничения", "region": "RU"},
-                {"query": f"{en} technology challenges adoption", "region": "COM"},
+                {"query": f"{category} рынок Россия исследование объем спрос", "region": "RU", "lang": "ru"},
+                {"query": f"{en} market size industry report forecast", "region": "COM", "lang": "en"},
+                {"query": f"{category} российские производители компании аналоги", "region": "RU", "lang": "ru"},
+                {"query": f"{en} manufacturers vendors companies products", "region": "COM", "lang": "en"},
+                {"query": f"{category} сравнение поставщиков конкуренты", "region": "RU", "lang": "ru"},
+                {"query": f"{en} leading suppliers comparison applications", "region": "COM", "lang": "en"},
+                {"query": f"{category} покупатели применение ограничения", "region": "RU", "lang": "ru"},
+                {"query": f"{en} technology challenges adoption", "region": "COM", "lang": "en"},
             ]
-            budget.consume_search(8, label="market_queries")
-            pack = await collect_market_evidence({"name": name, "product": product,
+            allowed = budget.consume_search(len(queries), label="market_queries")
+            skipped, queries = queries[allowed:], queries[:allowed]
+            for item in skipped:
+                states.append({"source": "market_queries", "status": "not_executed",
+                               "query": item["query"], "lang": item["lang"], "region": item["region"],
+                               "message": "Запрос не выполнен: исчерпан бюджет исследования"})
+            pack = await collect_market_evidence({"name": name, "product": product, "name_en": en,
+                                                  "product_en": en,
                                                   "search_queries": queries,
-                                                  "science_queries": [en, f"{en} applications challenges"]})
+                                                  "science_queries": [en, f"{en} applications challenges"]},
+                                                 budget=budget)
             states.extend(pack.get("source_states") or [])
             research = pack.get("evidence") or []
             # Round-robin by query prevents the first query consuming the document budget.
@@ -450,7 +470,7 @@ async def run_company_market_check(
                     )
             competitor_research = await discover_direction_candidates(
                 company, directions, llm=llm, existing_evidence=evidence,
-                query_budget=budget.consume_search(24, label="stage_b"),
+                query_budget=max(0, budget.max_search_queries - budget.used_search),
                 budget=budget,
             )
             summary["competitor_research"] = competitor_research
@@ -462,7 +482,7 @@ async def run_company_market_check(
                     summary["limitations"].append(item)
             # Keep existing product-page collection as discovery supplement for the report.
             candidate_pages, candidate_states = await _collect_competitor_product_pages(
-                dict(summary['product_scope'], company_name=name), evidence, llm)
+                dict(summary['product_scope'], company_name=name), evidence, llm, budget=budget)
             states.extend(candidate_states)
             for row in candidate_pages:
                 key = row.get('url') or row['id']

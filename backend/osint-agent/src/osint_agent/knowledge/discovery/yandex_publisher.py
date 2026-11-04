@@ -15,7 +15,7 @@ class DiscoveryHit:
     title: str
     url: str
     snippet: str = ""
-    source: str = "yandex"
+    source: str = ""  # фактический источник: exa_search | tavily_search | yandex_search
     publisher: str | None = None
     is_pdf: bool = False
     original_url_candidate: str | None = None
@@ -44,10 +44,10 @@ async def search_yandex(
     provider=None,
     budget_per_query: int = 8,
 ) -> list[DiscoveryHit]:
-    """Run product-profile queries through the existing YandexSearchProvider."""
-    from osint_agent.market.providers.web_search import YandexSearchProvider
+    """Run product-profile queries through the configured search provider."""
+    from osint_agent.market.providers.search_factory import get_search_provider
 
-    y = provider or YandexSearchProvider()
+    y = provider or get_search_provider()
     hits: list[DiscoveryHit] = []
     try:
         for qd in queries:
@@ -61,7 +61,14 @@ async def search_yandex(
             for it in (getattr(page, "items", None) or []):
                 url = it.get("url") or it.get("link") or ""
                 title = it.get("title") or ""
-                snippet = it.get("snippet") or it.get("description") or ""
+                # нормализованное поле passage не теряется; highlights/content — Exa/Tavily
+                snippet = (it.get("passage") or it.get("snippet") or it.get("description")
+                           or it.get("content") or "")
+                if not snippet:
+                    highlights = it.get("highlights")
+                    if isinstance(highlights, str):
+                        highlights = [highlights]
+                    snippet = "\n".join(str(h) for h in (highlights or []) if h)
                 if not url:
                     continue
                 # prefer publisher page over aggregator ad
@@ -73,6 +80,7 @@ async def search_yandex(
                     title=title[:300],
                     url=url,
                     snippet=snippet[:1000],
+                    source=it.get("source") or getattr(page, "source", "") or "",
                     publisher=_publisher_from_url(url),
                     is_pdf=bool(re.search(r"\.pdf($|\?)", url.lower())) or "pdf" in title.lower(),
                     original_url_candidate=url,

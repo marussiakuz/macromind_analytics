@@ -694,7 +694,7 @@ async def auto_analysis(body: AutoAnalysisIn) -> dict[str, Any]:
             use_discovery=body.use_discovery,
             request_key=body.request_key,
             repo=repo,
-        ), timeout=300)
+        ), timeout=1800)  # запас над ResearchBudget.max_seconds: локальная модель на CPU
         saved = out.get("saved") or out
         repo.finish_job(
             job["id"],

@@ -63,6 +63,26 @@ def extract_market_fragments(evidence: list[dict[str, Any]], *, limit: int = 8) 
     return out
 
 
+def _build_report_meta() -> dict[str, Any]:
+    """Model/config/search identifiers for report versioning (§3)."""
+    try:
+        from osint_agent.config import settings
+        llm_provider = settings.llm_provider or "yandex"
+        llm_model = settings.llm_model or (settings.yandex_folder_id and "qwen3.6-35b-a3b") or ""
+        llm_base = settings.llm_base_url or ""
+        search_provider = settings.search_provider or "yandex"
+        return {
+            "llm_provider": llm_provider,
+            "llm_model": llm_model,
+            "llm_base_url": llm_base,
+            "llm_context_size": settings.llm_context_size,
+            "search_provider": search_provider,
+            "schema_version": REPORT_SCHEMA_VERSION,
+        }
+    except Exception:
+        return {"schema_version": REPORT_SCHEMA_VERSION}
+
+
 def build_analytical_report(
     summary: dict[str, Any],
     *,
@@ -223,6 +243,7 @@ def build_analytical_report(
 
     return {
         "title": "Аналитический отчет",
+        "_meta": _build_report_meta(),
         "company": {
             "name": company,
             "inn": inn,
@@ -751,8 +772,18 @@ company_financials содержит уже полученную бухгалте
     return output
 
 
-def build_report_passages(evidence: list[dict], scope: dict) -> list[dict]:
-    """Bound context while retaining excerpts across queries and both source types."""
+def build_report_passages(evidence: list[dict], scope: dict, max_chars: int = 160000) -> list[dict]:
+    """Bound context while retaining excerpts across queries and both source types.
+
+    max_chars оставляет запас под completion: prompt ≈ ctx/2 токенов при ответе ctx/2.
+    """
+    try:
+        from osint_agent.config import settings
+        ctx = getattr(settings, 'llm_context_size', 4096)
+        if ctx and ctx < 32000:
+            max_chars = min(max_chars, int(ctx * 1.25))
+    except Exception:
+        pass
     terms = {t.casefold() for t in re.findall(r'[a-zA-Zа-яА-ЯёЁ]{4,}',
              str(scope.get('product') or '') + ' ' + str(scope.get('product_en') or ''))}
     groups = []
@@ -790,7 +821,7 @@ def build_report_passages(evidence: list[dict], scope: dict) -> list[dict]:
             if not group:
                 continue
             passage = group.pop(0)
-            if size + len(passage['text']) > 160000:
+            if size + len(passage['text']) > max_chars:
                 return passages
             size += len(passage['text'])
             passages.append(dict(passage, id=f'P{len(passages)+1}'))
@@ -928,6 +959,20 @@ def render_evidence_report_html(report: dict) -> str:
 async def _audit_batch(report: dict, scope: dict, llm) -> dict:
     """Second-pass claim/source and product-fit check. Fail closed, retain diagnostics."""
     from osint_agent.market.providers.yandex_llm import parse_interpretation
+
+    def _clip_claim(row: dict) -> dict:
+        out = {}
+        for k, v in row.items():
+            if k in ('quotes', 'evidence_ids'):
+                continue
+            if isinstance(v, str):
+                out[k] = v
+            elif isinstance(v, list):
+                out[k] = v[:6]
+            else:
+                out[k] = v
+        return out
+
     items, locations = [], []
     for category in ('sections', 'competitors'):
         for group, rows in report[category].items():
@@ -935,8 +980,9 @@ async def _audit_batch(report: dict, scope: dict, llm) -> dict:
                 key = f'C{len(items)+1}'
                 locations.append((key, category, group, row))
                 items.append({'id': key, 'kind': category, 'group': group,
-                              'claim': {k: v for k, v in row.items() if k not in ('quotes', 'evidence_ids')},
-                              'evidence': [q['quote'] for q in row['quotes']]})
+                              'claim': _clip_claim(row),
+                              'evidence': [str(q.get('quote') or '')
+                                           for q in (row.get('quotes') or [])]})
     if not items:
         report['audit_status'] = 'no_supported_claims'
         return report
@@ -964,14 +1010,33 @@ async def _audit_batch(report: dict, scope: dict, llm) -> dict:
     from datetime import datetime, timezone
     check_schema = object_schema({'verdict':{'type':'string','enum':['accept','reject','revise']},
         'text':{'type':'string','maxLength':1400}, 'reason':{'type':'string','maxLength':180}})
-    result = await llm.complete(system, {'as_of':datetime.now(timezone.utc).date().isoformat(),
-        'product_scope':{k:scope.get(k) for k in ('product','product_en','buyer','about','directions')}, 'items':items},
-        json_schema=object_schema({'checks':object_schema({i['id']:check_schema for i in items})}))
-    raw = parse_interpretation(result.text) if result.ok else None
-    checks = raw.get('checks') if isinstance(raw,dict) else None
-    if not isinstance(checks,dict):
-        checks = {}
-        raw = None
+    # Батчи по 4 элемента: полный пакет превышал контекст локальной модели (HTTP 400).
+    checks: dict[str, Any] = {}
+    any_ok = False
+    prompt_tokens = completion_tokens = 0
+    errors: list[str] = []
+    for start in range(0, len(items), 4):
+        chunk = items[start:start + 4]
+        result = await llm.complete(system, {'as_of':datetime.now(timezone.utc).date().isoformat(),
+            'product_scope':{k:scope.get(k) for k in ('product','product_en','buyer','about','directions')},
+            'items': chunk},
+            json_schema=object_schema({'checks':object_schema({i['id']:check_schema for i in chunk})}))
+        prompt_tokens += result.prompt_tokens or 0
+        completion_tokens += result.completion_tokens or 0
+        raw = parse_interpretation(result.text) if result.ok else None
+        batch_checks = raw.get('checks') if isinstance(raw, dict) else None
+        if not isinstance(batch_checks, dict):
+            # Fail closed: элементы этого батча останутся без verdict и будут отклонены ниже.
+            errors.append(result.error or 'Модель не вернула проверку')
+            continue
+        any_ok = True
+        for item in chunk:
+            check = batch_checks.get(item['id'])
+            if not isinstance(check, dict) or check.get('verdict') not in ('accept', 'reject', 'revise'):
+                errors.append(f"Нет корректного результата проверки {item['id']}")
+                continue
+            checks[item['id']] = check
+    raw = {'checks': checks} if any_ok else None
     for group in report['sections']:
         report['sections'][group] = []
     for group in report['competitors']:
@@ -986,21 +1051,21 @@ async def _audit_batch(report: dict, scope: dict, llm) -> dict:
             report[category][group].append(row)
         else:
             report['rejected'].append({'section':group,'reason':str(check.get('reason') or 'not_approved_by_evidence_audit')[:180]})
-    report['audit_status'] = 'completed' if raw else 'unavailable'
-    report['audit_prompt_tokens'] = result.prompt_tokens
-    report['audit_completion_tokens'] = result.completion_tokens
-    if not raw:
-        report['error'] = result.error or 'Не удалось проверить соответствие выводов источникам'
+    report['audit_status'] = ('partial' if errors else 'completed') if raw else 'unavailable'
+    report['audit_prompt_tokens'] = prompt_tokens
+    report['audit_completion_tokens'] = completion_tokens
+    if errors or not raw:
+        report['error'] = '; '.join(dict.fromkeys(errors)) or 'Не удалось проверить соответствие выводов источникам'
     return report
 
 
 async def audit_report(report: dict, scope: dict, llm) -> dict:
     """Separate narrative verification from vendor checks to keep evidence context focused."""
-    import asyncio
+    # Последовательно: локальная llama-server обслуживает один запрос за раз.
     paragraphs = {'sections':report['sections'], 'competitors':{}, 'rejected':[]}
     vendors = {'sections':{}, 'competitors':report['competitors'], 'rejected':[]}
-    checked_text, checked_vendors = await asyncio.gather(
-        _audit_batch(paragraphs, scope, llm), _audit_batch(vendors, scope, llm))
+    checked_text = await _audit_batch(paragraphs, scope, llm)
+    checked_vendors = await _audit_batch(vendors, scope, llm)
     report['sections'] = checked_text['sections']
     report['competitors'] = checked_vendors['competitors']
     for checked in (checked_text, checked_vendors):
