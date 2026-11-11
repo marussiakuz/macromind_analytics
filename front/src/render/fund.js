@@ -1,3 +1,4 @@
+import { renderPitchDeckTab } from './pitchDeck.js';
 import { mockProjects } from '../data/mockData.js';
 import { formatDate, getStatusColor } from '../utils/helpers.js';
 import { renderHeader } from './header.js';
@@ -69,6 +70,7 @@ const SECTIONS = [
 const FUNNEL_TABS = [
   { id: 'projects',       icon: 'layers',       label: 'Воронка сделок'     },
   { id: 'check-company',  icon: 'search',       label: 'Поиск'              },
+  { id: 'pitch-decks',    icon: 'file-text',    label: 'Питч-деки'          },
 ];
 
 const PORTFOLIO_TABS = [
@@ -762,6 +764,7 @@ function renderPostContent() {
 
 function renderFunnelContent() {
   if (state.currentFundTab === 'projects') return renderProjectsTab();
+  if (state.currentFundTab === 'pitch-decks') return renderPitchDeckTab();
   // check-person / competency hidden from nav — always render search as fallback
   return renderCheckCompanyTab();
 }
@@ -782,7 +785,7 @@ function renderArchiveContent() {
 
 export function renderFundDashboard() {
   // Hidden tabs (person/competency) — fall back to search if stale state.
-  const tab = ['projects', 'check-company'].includes(state.currentFundTab)
+  const tab = ['projects', 'check-company', 'pitch-decks'].includes(state.currentFundTab)
     ? state.currentFundTab
     : 'check-company';
   if (state.currentFundTab !== tab) state.currentFundTab = tab;

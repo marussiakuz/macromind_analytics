@@ -14,6 +14,13 @@ export const state = {
   showAiConsentModal: false,
   /** Активная вкладка в панели фонда (фаза "до"): 'projects' | 'check-company' (Поиск) */
   currentFundTab: 'projects',
+  /** Анализ питч-деков */
+  pitchDeckModel: null,
+  pitchDeckList: [],
+  pitchDeckActive: null,
+  pitchDeckSlide: null,
+  pitchDeckUploading: false,
+  pitchDeckError: null,
   /** История проверенных компаний (с personResults) */
   checkHistory: [],
   /** Активная проверка юрлица (карточка + физлица) */

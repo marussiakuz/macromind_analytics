@@ -17,6 +17,7 @@ import {
 } from './api/companyRegistry.js';
 import { setupMarketListeners, loadMarketSummaryForInn, resetMarketState, downloadMarketReport, runAutoMarketAnalysis } from './market/events.js';
 import { marketState } from './market/state.js';
+import { loadPitchDeckTab, setupPitchDeckListeners } from './pitchDeckEvents.js';
 
 // API base URL (adjust for production)
 const API_BASE = 'http://localhost:8000';
@@ -481,9 +482,12 @@ export function setupEventListeners(renderApp) {
       if (tab) {
         state.currentFundTab = tab;
         renderApp();
+        if (tab === 'pitch-decks') loadPitchDeckTab(renderApp);
       }
     });
   });
+
+  setupPitchDeckListeners(renderApp);
 
   // Навигация фонда (фаза "после инвестиции")
   document.querySelectorAll('.post-nav-btn').forEach((btn) => {

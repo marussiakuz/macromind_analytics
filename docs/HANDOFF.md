@@ -32,6 +32,7 @@
 | Хранение, поиск, сигналы | `backend/osint-agent/src/osint_agent/knowledge/{pg_repository,retrieval,signals}.py` |
 | Интерфейс проверки | `front/src/events.js`, `front/src/api/`, `front/src/render/` |
 | Рыночный отчёт UI | `front/src/render/market.js`, `front/src/market/` |
+| Анализ питч-деков | `backend/osint-agent/src/osint_agent/pitchdeck/`, `api/pitchdeck.py`, `scripts/pitchdeck_lab.py`, `front/src/render/pitchDeck.js`, см. `docs/PITCHDECK.md` |
 | Поиск профилей людей | `backend/person-osint-agent/src/person_osint/` |
 
 В коде есть старые модули, демонстрационные сборщики и вспомогательные расчёты.
