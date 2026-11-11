@@ -15,6 +15,7 @@ from osint_agent.api.persons import router as persons_router
 from osint_agent.api.companies import router as companies_router
 from osint_agent.api.market import router as market_router
 from osint_agent.api.knowledge import router as knowledge_router
+from osint_agent.api.pitchdeck import router as pitchdeck_router
 
 logger = get_logger(__name__)
 
@@ -78,6 +79,7 @@ app.include_router(persons_router)
 app.include_router(companies_router)
 app.include_router(market_router)
 app.include_router(knowledge_router)
+app.include_router(pitchdeck_router)
 
 
 @app.get("/health")

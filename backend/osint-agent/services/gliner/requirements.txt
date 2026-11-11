@@ -1,0 +1,5 @@
+# Separate environment; optional for the main API. Model download requires network and disk space.
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+gliner>=0.2.16,<0.3
+protobuf>=4.25  # tokenizer of the mdeberta-v3 backbone

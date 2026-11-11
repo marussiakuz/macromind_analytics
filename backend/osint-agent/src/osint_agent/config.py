@@ -102,6 +102,13 @@ class Settings(BaseSettings):
     knowledge_job_deadline_seconds: int = 1800
     knowledge_max_parallel_jobs: int = 1
 
+    # Pitch deck analysis: decks are confidential, so only a local model is allowed by default
+    pitchdeck_ollama_url: str = "http://127.0.0.1:11434"
+    pitchdeck_model: str = "qwen2.5vl:7b"
+    pitchdeck_allow_remote_llm: bool = False
+    pitchdeck_data_dir: str = "data/pitchdeck"
+    pitchdeck_max_upload_mb: int = 100
+
     # Sanctions
     sanctions_update_cron: str = "0 3 * * *"
 
